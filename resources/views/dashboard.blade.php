@@ -9,7 +9,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
+{{--                    {{ __("You're logged in!") }}--}}
+                    <h1 class="text-3xl font-bold">Welcome to the Dashboard</h1>
+                    <p class="mt-2">{{Auth::user()->name}} : {{Auth::user()->rule}}</p>
                 </div>
             </div>
         </div>
