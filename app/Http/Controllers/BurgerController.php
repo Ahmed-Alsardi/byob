@@ -13,7 +13,7 @@ class BurgerController extends Controller
      */
     public function index()
     {
-        //
+        return view("burger");
     }
 
     /**
@@ -29,7 +29,7 @@ class BurgerController extends Controller
      */
     public function store(StoreBurgerRequest $request)
     {
-        //
+        dd($request->all());
     }
 
     /**

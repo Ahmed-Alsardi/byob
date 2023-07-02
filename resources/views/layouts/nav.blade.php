@@ -13,7 +13,7 @@
                             <a href="{{route('dashboard')}}"
                                class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Dashboard</a>
                         @endif
-                        <a href="#"
+                        <a href="{{route('burgers.index')}}"
                            class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Burger</a>
                     </div>
                 </div>
