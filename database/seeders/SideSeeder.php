@@ -18,7 +18,12 @@ class SideSeeder extends Seeder
     {
         $this->disableForeignKeys();
         $this->truncateTable("sides");
-        Side::factory()->count(10)->create();
+        $sideTypes = ['tomato', 'onion', 'lettuce', 'ketchup', 'garlic', 'mayo'];
+        foreach ($sideTypes as $side) {
+            Side::factory()->create([
+                'name' => $side,
+            ]);
+        }
         $this->enableForeignKeys();
     }
 }

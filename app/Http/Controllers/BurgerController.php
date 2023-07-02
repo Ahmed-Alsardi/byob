@@ -5,15 +5,19 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreBurgerRequest;
 use App\Http\Requests\UpdateBurgerRequest;
 use App\Models\Burger;
+use App\Repository\SideRepository;
 
 class BurgerController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(SideRepository $repository)
     {
-        return view("burger");
+        $sides = $repository->getAll();
+        return view("burger", [
+            "sides" => $sides
+        ]);
     }
 
     /**

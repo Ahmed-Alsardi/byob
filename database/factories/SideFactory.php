@@ -16,10 +16,8 @@ class SideFactory extends Factory
      */
     public function definition(): array
     {
-        $sideTypes = ['tomato', 'onion', 'lettuce', 'ketchup', 'garlic', 'mayo'];
-        $side = $sideTypes[array_rand($sideTypes)];
         return [
-            'name' => $side,
+            'name' => $this->faker->word,
         ];
     }
 }
