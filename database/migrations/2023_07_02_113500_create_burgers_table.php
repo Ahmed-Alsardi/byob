@@ -13,8 +13,13 @@ return new class extends Migration
     {
         Schema::create('burgers', function (Blueprint $table) {
             $table->id();
-            $table->string("bread");
-            $table->string("meat");
+            $table->foreignId("meat_id");
+            $table->foreign("meat_id")->references("id")->on("burger_customizations");
+            $table->foreignId("bread_id");
+            $table->foreign("bread_id")->references("id")->on("burger_customizations");
+            $table->json("sides")->nullable();
+            $table->foreignId("order_id")->nullable();
+            $table->foreign("order_id")->references("id")->on("orders");
             $table->timestamps();
         });
     }

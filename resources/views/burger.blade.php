@@ -27,26 +27,28 @@
                         <div>
                             <label for="bread${burgerCounter}" class="font-bold">Bread:</label>
                             <select id="bread${burgerCounter}" name="burgers[${burgerCounter}][bread]" class="block mt-1 mb-4 w-full p-2 border-gray-300 border rounded-md">
-                                <option value="white">White</option>
-                                <option value="brown">Brown</option>
+                            @foreach($breads as $bread)
+                                <option value="{{$bread->name}}">{{$bread->name}}</option>
+                            @endforeach
                             </select>
                         </div>
                         <div>
                             <label for="meat${burgerCounter}" class="font-bold">Meat:</label>
                             <select id="meat${burgerCounter}" name="burgers[${burgerCounter}][meat]" class="block mt-1 mb-4 w-full p-2 border-gray-300 border rounded-md">
-                                <option value="meat">Meat</option>
-                                <option value="chicken">Chicken</option>
+                            @foreach($meats as $meat)
+                                <option value="{{$meat->name}}">{{$meat->name}}</option>
+                            @endforeach
                             </select>
                         </div>
                         <div>
                             <label class="font-bold">Sides:</label>
                             <div class="mt-1 mb-4">
-{{--                                @foreach($sides as $side)--}}
-{{--                                    <label class="flex items-center">--}}
-{{--                                        <input type="checkbox" name="burgers[${burgerCounter}][sides][]" value="{{$side->name}}" class="mr-2">--}}
-{{--                                            {{ $side->name }}--}}
-{{--                                    </label>--}}
-{{--                                @endforeach--}}
+                                @foreach($sides as $side)
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="burgers[${burgerCounter}][sides][]" value="{{$side->name}}" class="mr-2">
+                                            {{ $side->name }}
+                                    </label>
+                                @endforeach
                             </div>
                         </div>
                 </div>
