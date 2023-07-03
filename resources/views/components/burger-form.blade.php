@@ -7,7 +7,7 @@
                 <select id="bread{{$burgerIndex}}" name="burgers[{{$burgerIndex}}][bread]"
                         class="block mt-1 mb-4 w-full p-2 border-gray-300 border rounded-md">
                     @foreach($breads as $bread)
-                        @if($burger['bread'] === $bread)
+                        @if($burger['bread'] === $bread->name)
                             <option value="{{$bread->name}}" selected>{{$bread->name}}</option>
                         @else
                             <option value="{{$bread->name}}">{{$bread->name}}</option>
@@ -20,7 +20,7 @@
                 <select id="meat{{$burgerIndex}}" name="burgers[{{$burgerIndex}}][meat]"
                         class="block mt-1 mb-4 w-full p-2 border-gray-300 border rounded-md">
                     @foreach($meats as $meat)
-                        @if($burger['meat'] === $meat)
+                        @if($burger['meat'] === $meat->name)
                             <option value="{{$meat->name}}" selected>{{$meat->name}}</option>
                         @else
                             <option value="{{$meat->name}}">{{$meat->name}}</option>
@@ -32,7 +32,7 @@
                 <label class="font-bold">Sides:</label>
                 <div class="mt-1 mb-4">
                     @foreach($sides as $side)
-                        @if(isset($burger['sides']) && in_array($side, $burger['sides']))
+                        @if(isset($burger['sides']) && in_array($side->name, $burger['sides']))
                             <label class="flex items-center">
                                 <input type="checkbox" checked name="burgers[{{$burgerIndex}}][sides][]"
                                        value="{{$side->name}}"
