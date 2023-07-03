@@ -37,7 +37,12 @@ class BurgerController extends Controller
      */
     public function store(StoreBurgerRequest $request)
     {
-        dd($request->all()['burgers']);
+        if (session()->exists("burgers")) {
+            session()->remove("burgers");
+        }
+        session(["burgers" => $request->all()['burgers']]);
+        dump(session()->get("burgers"));
+        return redirect("/burgers");
         $burgers = [];
 //        foreach ($request->all()['burgers'] as $b) {
 //            $meat_id = BurgerCustomizationRepository::getId("meat", $b['meat']);
