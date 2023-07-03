@@ -45,5 +45,6 @@ class CheckoutController extends Controller
         if (!auth()->check()) {
             return redirect()->route("login");
         }
+        return redirect()->route("dashboard");
     }
 }
