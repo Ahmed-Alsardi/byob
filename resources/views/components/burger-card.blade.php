@@ -10,12 +10,14 @@
         <p>{{ $burger['bread'] }}</p>
     </div>
 
-    <div class="mb-4">
-        <p class="text-lg font-semibold">Sides:</p>
-        <ul class="flex justify-center items-center">
-            @foreach ($burger['sides'] as $side)
-            <li class="px-2">{{ $side }}</li>
-            @endforeach
-        </ul>
-    </div>
+    @if(isset($burger['sides']))
+        <div class="mb-4">
+            <p class="text-lg font-semibold">Sides:</p>
+            <ul class="flex justify-center items-center">
+                @foreach ($burger['sides'] as $side)
+                    <li class="px-2">{{ $side }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 </div>

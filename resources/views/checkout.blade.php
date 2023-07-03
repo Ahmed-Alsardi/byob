@@ -18,7 +18,10 @@
                 <p>House Number: {{ $location['house_number'] }}</p>
             </div>
 
-            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">Pay Now</button>
+            <form method="POST" action="{{route('checkout.store')}}">
+                @csrf
+                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">Pay Now</button>
+            </form>
         </div>
     </div>
 </x-app-layout>

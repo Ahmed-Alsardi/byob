@@ -38,15 +38,18 @@ class BurgerController extends Controller
      */
     public function store(StoreBurgerRequest $request)
     {
+        if (!$request->has("burgers")) {
+            return redirect()->route("burgers.index");
+        }
         BurgerRepository::createBurger($request->all()["burgers"]);
         if (auth()->check()) {
             $user = $request->user();
             if ($user->location_id) {
-                return redirect()->route("checkout");
+                return redirect()->route("checkout.create");
             }
         } else {
           if (session()->exists("location")) {
-            return redirect()->route("checkout");
+            return redirect()->route("checkout.create");
           }
         }
         return redirect()->route("location.index");

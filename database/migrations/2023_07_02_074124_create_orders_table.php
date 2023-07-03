@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Helper\OrderStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,9 +16,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId("customer_id");
             $table->foreign("customer_id")->references("id")->on("users");
-            $table->foreignId("chef_id");
+            $table->foreignId("chef_id")->nullable();
             $table->foreign("chef_id")->references("id")->on("users");
-            $table->string("status")->default("pending");
+            $table->string("status")->default(OrderStatus::REQUIRED_PAYMENT);
             $table->timestamps();
         });
     }

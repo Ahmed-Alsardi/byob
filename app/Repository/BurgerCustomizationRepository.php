@@ -16,6 +16,15 @@ class BurgerCustomizationRepository
             ->first()
             ->id;
     }
+
+    public static function getName(string $category, int $id): string
+    {
+        return BurgerCustomization::query()
+            ->where("category", $category)
+            ->where("id", $id)
+            ->first()
+            ->name;
+    }
     public static function getBreads(): Collection|array
     {
         return self::_getType("bread");

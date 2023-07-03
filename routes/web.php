@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BurgerController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -18,20 +19,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name("home");
 Route::get("/burgers", [BurgerController::class, "index"])->name("burgers.index");
 Route::post("/burgers", [BurgerController::class, "store"])->name("burgers.store");
 
 Route::get("/location", [LocationController::class, "index"])->name("location.index");
 Route::post("/location", [LocationController::class, "store"])->name("location.store");
-Route::get("/checkout", function() {
-    $burgers = session()->get("burgers");
-    $location = session()->get("location");
-    return view("checkout", [
-        "burgers" => $burgers,
-        "location" => $location,
-    ]);
-})->name("checkout");
+Route::get("/checkout", [CheckoutController::class, "create"])->name("checkout.create");
+Route::post("/checkout", [CheckoutController::class, "store"])->name("checkout.store");
 
 Route::get('/dashboard', function () {
     return view('dashboard');

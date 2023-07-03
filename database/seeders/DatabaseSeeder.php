@@ -13,16 +13,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+            UserSeeder::class,
+            BurgerCustomizationSeeder::class,
+            BurgerSeeder::class,
+        ]);
         User::factory()->create([
             "name" => "admin",
             "email" => "admin@admin.com",
             "password" => bcrypt("password"),
             "rule" => "admin",
-        ]);
-        $this->call([
-            UserSeeder::class,
-            BurgerCustomizationSeeder::class,
-            BurgerSeeder::class,
         ]);
     }
 }

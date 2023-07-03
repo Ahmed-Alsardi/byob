@@ -6,7 +6,7 @@
             <div class="mb-4">
                 <label for="city" class="block text-gray-700 font-bold mb-2">City:</label>
                 @if(session()->exists("location"))
-                    <input type="text" id="city" name="city" class="w-full p-2 border border-gray-300 rounded-md" value="{{ session()->get("location")->city }}" required>
+                    <input type="text" id="city" name="city" class="w-full p-2 border border-gray-300 rounded-md" value="{{ session()->get("location")['city'] }}" required>
                 @else
                     <input type="text" id="city" name="city" class="w-full p-2 border border-gray-300 rounded-md" required>
                 @endif
@@ -14,8 +14,8 @@
 
             <div class="mb-4">
                 <label for="street" class="block text-gray-700 font-bold mb-2">Street:</label>
-                @if(session()->exists("location")))
-                    <input type="text" id="street" name="street" class="w-full p-2 border border-gray-300 rounded-md" value="{{ session()->get("location")->street }}" required>
+                @if(session()->exists("location"))
+                    <input type="text" id="street" name="street" class="w-full p-2 border border-gray-300 rounded-md" value="{{ session()->get("location")['street'] }}" required>
                 @else
                     <input type="text" id="street" name="street" class="w-full p-2 border border-gray-300 rounded-md" required>
                 @endif
@@ -23,8 +23,8 @@
 
             <div class="mb-4">
                 <label for="house_number" class="block text-gray-700 font-bold mb-2">House Number:</label>
-                @if(session()->exists("location")))
-                    <input type="number" id="house_number" name="house_number" class="w-full p-2 border border-gray-300 rounded-md" value="{{ session()->get("location")->house_number }}" required>
+                @if(session()->exists("location"))
+                    <input type="number" id="house_number" name="house_number" class="w-full p-2 border border-gray-300 rounded-md" value="{{ session()->get("location")['house_number'] }}" required>
                 @else
                     <input type="number" id="house_number" name="house_number" class="w-full p-2 border border-gray-300 rounded-md" required>
                 @endif

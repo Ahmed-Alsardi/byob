@@ -39,7 +39,7 @@ class LocationController extends Controller
             "house_number" => $request->all()["house_number"],
         ];
         LocationRepository::createLocation($location);
-        return redirect()->route("checkout");
+        return redirect()->route("checkout.create");
     }
 
     /**

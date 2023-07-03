@@ -23,4 +23,10 @@ class LocationRepository
             session(["location" => $location]);
         }
     }
+
+    public static function getUserLocation($user) {
+        return Location::query()
+            ->where("user_id", "=", $user->id)
+            ->first();
+    }
 }
