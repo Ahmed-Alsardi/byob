@@ -24,8 +24,10 @@ class BurgerRepository
         $meat = BurgerCustomizationRepository::getName("meat", $burger->meat_id);
         $bread = BurgerCustomizationRepository::getName("bread", $burger->bread_id);
         $sides = [];
-        foreach ($burger->sides as $side) {
-            $sides[] = BurgerCustomizationRepository::getName("side", $side);
+        if ($burger->sides()) {
+            foreach ($burger->sides() as $side) {
+                $sides[] = BurgerCustomizationRepository::getName("side", $side);
+            }
         }
         return [
             "meat" => $meat,
@@ -56,7 +58,7 @@ class BurgerRepository
             Burger::query()->create([
                 "meat_id" => $b["meat_id"],
                 "bread_id" => $b["bread_id"],
-                "sides" => json_encode($b["sides"]),
+                "sides" => json_encode($b["sides"] !== [] ? $b["sides"] : null),
                 "order_id" => $order_id,
             ]);
         }

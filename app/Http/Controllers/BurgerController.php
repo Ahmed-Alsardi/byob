@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateBurgerRequest;
 use App\Models\Burger;
 use App\Repository\BurgerCustomizationRepository;
 use App\Repository\BurgerRepository;
+use App\Repository\OrderRepository;
 
 class BurgerController extends Controller
 {
@@ -41,16 +42,18 @@ class BurgerController extends Controller
         if (!$request->has("burgers")) {
             return redirect()->route("burgers.index");
         }
-        BurgerRepository::createBurger($request->all()["burgers"]);
         if (auth()->check()) {
             $user = $request->user();
+            $order = OrderRepository::createEmptyOrder($user);
+            BurgerRepository::createBurger($request->all()["burgers"], $order->id);
             if ($user->location_id) {
                 return redirect()->route("checkout.create");
             }
         } else {
-          if (session()->exists("location")) {
-            return redirect()->route("checkout.create");
-          }
+            BurgerRepository::createBurger($request->all()["burgers"]);
+            if (session()->exists("location")) {
+                return redirect()->route("checkout.create");
+            }
         }
         return redirect()->route("location.index");
     }

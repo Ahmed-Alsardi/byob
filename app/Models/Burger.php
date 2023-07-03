@@ -20,6 +20,10 @@ class Burger extends Model
         "sides" => "array",
     ];
 
+    public function sides() {
+        return json_decode($this->sides, true);
+    }
+
     public function order() {
         return $this->belongsTo(Order::class);
     }

@@ -7,8 +7,9 @@ use App\Models\Location;
 class LocationRepository
 {
 
-    public static function createLocation(array $location, int $userId = null): void
+    public static function createLocation(array $location): void
     {
+        $userId = auth()->id();
         if ($userId) {
             Location::query()->create([
                 "city" => $location["city"],

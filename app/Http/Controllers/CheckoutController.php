@@ -23,7 +23,7 @@ class CheckoutController extends Controller
                 return redirect()->route("home");
             }
             $burgers = $order->burgers;
-            $burgers->map(fn($burger) => BurgerRepository::convertFromEntityToArray($burger));
+            $burgers = $burgers->map(fn($burger) => BurgerRepository::convertFromEntityToArray($burger));
         } else {
             if (!session()->exists("burgers")) {
                 return redirect()->route("home");

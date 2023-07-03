@@ -18,4 +18,13 @@ class OrderRepository
             ->get();
     }
 
+    public static function createEmptyOrder($user)
+    {
+        return Order::query()
+            ->create([
+                "customer_id" => $user->id,
+                "status" => OrderStatus::REQUIRED_PAYMENT,
+            ]);
+    }
+
 }

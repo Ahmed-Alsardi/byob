@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             BurgerCustomizationSeeder::class,
-            BurgerSeeder::class,
         ]);
         User::factory()->create([
             "name" => "admin",
