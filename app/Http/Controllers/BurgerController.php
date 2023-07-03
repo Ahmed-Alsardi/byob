@@ -39,7 +39,17 @@ class BurgerController extends Controller
     public function store(StoreBurgerRequest $request)
     {
         BurgerRepository::createBurger($request->all()["burgers"]);
-        return redirect("/");
+        if (auth()->check()) {
+            $user = $request->user();
+            if ($user->location_id) {
+                return redirect()->route("checkout");
+            }
+        } else {
+          if (session()->exists("location")) {
+            return redirect()->route("checkout");
+          }
+        }
+        return redirect()->route("location.index");
     }
 
     /**
