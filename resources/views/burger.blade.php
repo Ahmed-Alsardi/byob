@@ -41,12 +41,12 @@
                         <div>
                             <label class="font-bold">Sides:</label>
                             <div class="mt-1 mb-4">
-                                @foreach($sides as $side)
-                                    <label class="flex items-center">
-                                        <input type="checkbox" name="burgers[${burgerCounter}][sides][]" value="{{$side->name}}" class="mr-2">
-                                            {{ $side->name }}
-                                    </label>
-                                @endforeach
+{{--                                @foreach($sides as $side)--}}
+{{--                                    <label class="flex items-center">--}}
+{{--                                        <input type="checkbox" name="burgers[${burgerCounter}][sides][]" value="{{$side->name}}" class="mr-2">--}}
+{{--                                            {{ $side->name }}--}}
+{{--                                    </label>--}}
+{{--                                @endforeach--}}
                             </div>
                         </div>
                 </div>
