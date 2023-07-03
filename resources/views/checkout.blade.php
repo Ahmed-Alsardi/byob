@@ -5,9 +5,10 @@
         <div class="bg-white p-8 rounded-lg shadow-md">
             <h2 class="text-2xl font-bold mb-4">Order Summary</h2>
 
-            <div class="mb-6">
-                <p class="text-lg font-semibold">Number of Burgers:</p>
-                <p>{{ count($burgers) }}</p>
+            <div class="w-full mx-auto mb-6 flex justify-center items-center flex-wrap">
+                @foreach($burgers as $burger)
+                    <x-burger-card :index="$loop->index" :burger="$burger"/>
+                @endforeach
             </div>
 
             <div class="mb-6">
