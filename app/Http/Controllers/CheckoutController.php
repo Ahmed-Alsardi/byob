@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Repository\BurgerRepository;
 use App\Repository\LocationRepository;
 use App\Repository\OrderRepository;
+use App\Services\EmailNotificationService;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
 
@@ -61,17 +62,21 @@ class CheckoutController extends Controller
             return auth()
                 ->user()
                 ->checkout(["price_1NQ8lCFTh5hPDE8Wx8ItBCg0" => $burgerCounts], [
-                    "success_url" => route("checkout.success") . "?session_id={CHECKOUT_SESSION_ID}",
+                    "success_url" => route("checkout.success", $order) . "?session_id={CHECKOUT_SESSION_ID}",
                     "cancel_url" => route("checkout.cancel", $order),
                 ]);
-//            return redirect()->route("order.show", $order);
         } else {
             abort(400, "No available chefs");
         }
     }
 
-    public function success(Request $request) {
+    public function success(Request $request, Order $order) {
         $checkoutSession = $request->user()->stripe()->checkout->sessions->retrieve($request->get('session_id'));
+        if ($order->customer_id !== $request->user()->id) {
+            abort(403);
+        }
+        if ($or)
+        EmailNotificationService::sendReceiptEmail($order);
         return redirect()->route("order.index");
     }
 
