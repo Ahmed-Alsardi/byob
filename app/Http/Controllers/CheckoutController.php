@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Repository\BurgerRepository;
 use App\Repository\LocationRepository;
 use App\Repository\OrderRepository;
+use App\Services\OrderService;
 use Illuminate\Http\Request;
 
 class CheckoutController extends Controller
@@ -45,6 +46,11 @@ class CheckoutController extends Controller
         if (!auth()->check()) {
             return redirect()->route("login");
         }
-        return redirect()->route("dashboard");
+        $order = OrderRepository::getUnpaidOrder(auth()->user())->first();
+        if (OrderService::assignOrderToChef($order)){
+            return redirect()->route("order.show", $order);
+        } else {
+            abort(400, "No available chefs");
+        }
     }
 }

@@ -11,7 +11,7 @@
                 <div class="p-6 text-gray-900">
 {{--                    {{ __("You're logged in!") }}--}}
                     <h1 class="text-3xl font-bold">Welcome to the Dashboard</h1>
-                    <p class="mt-2">{{Auth::user()->name}} : {{Auth::user()->rule}}</p>
+                    <p class="mt-2">{{Auth::user()->name}} : {{Auth::user()->role}}</p>
                 </div>
             </div>
         </div>

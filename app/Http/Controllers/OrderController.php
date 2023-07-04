@@ -6,6 +6,7 @@ use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
 use App\Repository\OrderRepository;
+use App\Services\OrderService;
 use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
