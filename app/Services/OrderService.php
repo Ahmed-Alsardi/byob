@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helper\OrderStatus;
 use App\Models\Chef;
+use App\Models\Customer;
 use App\Models\Order;
 use Illuminate\Support\Facades\DB;
 
@@ -11,7 +12,7 @@ class OrderService
 {
 
     const ORDER_TIME = 5;
-    const BURGER_PRICE = 10;
+    const BURGER_PRICE = 1000;
     public static function assignOrderToChef($order): bool {
         return DB::transaction(function () use ($order) {
             $chefs = Chef::query()
@@ -31,6 +32,10 @@ class OrderService
             $chef->unavailable_until = now()->addMinutes(self::ORDER_TIME);
             $order->status = OrderStatus::IN_PROGRESS;
             $order->chef_id = $chef->id;
+            $customerLocation = Customer::query()->where("id", "=", $order->customer_id)->first()->location;
+            $order->city = $customerLocation->city;
+            $order->street = $customerLocation->street;
+            $order->house_number = $customerLocation->house_number;
             $order->save();
             $chef->save();
             return true;
@@ -43,6 +48,9 @@ class OrderService
             $chef->unavailable_until = now()->subMinutes(self::ORDER_TIME);
             $order->status = OrderStatus::REQUIRED_PAYMENT;
             $order->chef_id = null;
+            $order->city = null;
+            $order->street = null;
+            $order->house_number = null;
             $order->save();
             $chef->save();
             return true;

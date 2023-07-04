@@ -17,9 +17,12 @@ class OrderRepository
             ->get();
     }
 
-    public static function getUnpaidOrCreate($user)
+    public static function getUnpaidOrCreate($user, $removeExistingBurgers=false)
     {
         $order = self::getUnpaidOrder($user)->first();
+        if ($order && $removeExistingBurgers) {
+            $order->burgers->map(fn($burger) => $burger->forceDelete());
+        }
         return $order ?? Order::query()
             ->create([
                 "customer_id" => $user->id,

@@ -5,8 +5,8 @@
 
         <div id="burger-sections" class="space-y-4 mb-8">
             <!-- Burger input sections will be dynamically added here -->
-            @if(session()->exists("burgers"))
-                @foreach(session()->get("burgers") as $burger)
+            @if($burgers)
+                @foreach($burgers as $burger)
                     <x-burger-form :burgerIndex="$loop->index" :burger="$burger" :breads="$breads" :meats="$meats"
                                    :sides="$sides"/>
                 @endforeach

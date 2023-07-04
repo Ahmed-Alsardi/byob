@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use App\Repository\BurgerRepository;
 use App\Repository\LocationRepository;
 use App\Repository\OrderRepository;
@@ -13,7 +14,7 @@ class CheckoutController extends Controller
     //
     public function create()
     {
-        if (auth()->check()){
+        if (auth()->check()) {
             $order = OrderRepository::getUnpaidOrder(auth()->user())->first();
             if (!$order) {
                 return redirect()->route("burgers.index");
@@ -35,7 +36,7 @@ class CheckoutController extends Controller
             $location = session()->get("location");
         }
         $totalPrice = OrderService::calculatePrice(null, $burgers);
-        if ($totalPrice <= 0 ) {
+        if ($totalPrice <= 0) {
             return redirect()->route("burgers.index");
         }
         return view("checkout", [
@@ -55,10 +56,30 @@ class CheckoutController extends Controller
         if ($totalPrice <= 0) {
             return redirect()->route("burgers.index");
         }
-        if (OrderService::assignOrderToChef($order)){
-            return redirect()->route("order.show", $order);
+        $burgerCounts = (int) ($totalPrice / OrderService::BURGER_PRICE);
+        if (OrderService::assignOrderToChef($order)) {
+            return auth()
+                ->user()
+                ->checkout(["price_1NQ8lCFTh5hPDE8Wx8ItBCg0" => $burgerCounts], [
+                    "success_url" => route("checkout.success") . "?session_id={CHECKOUT_SESSION_ID}",
+                    "cancel_url" => route("checkout.cancel", $order),
+                ]);
+//            return redirect()->route("order.show", $order);
         } else {
             abort(400, "No available chefs");
         }
+    }
+
+    public function success(Request $request) {
+        $checkoutSession = $request->user()->stripe()->checkout->sessions->retrieve($request->get('session_id'));
+        return redirect()->route("order.index");
+    }
+
+    public function cancel(Request $request, Order $order) {
+        if ($order->customer_id !== $request->user()->id) {
+            abort(403);
+        }
+        OrderService::rollbackChefAssignment($order);
+        return redirect()->route("burgers.index");
     }
 }

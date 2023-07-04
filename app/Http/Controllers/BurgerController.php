@@ -19,10 +19,22 @@ class BurgerController extends Controller
         $meats = BurgerCustomizationRepository::getMeats();
         $breads = BurgerCustomizationRepository::getBreads();
         $sides = BurgerCustomizationRepository::getSides();
+        if (auth()->check()) {
+            $order = OrderRepository::getUnpaidOrder(auth()->user())->first();
+            if ($order) {
+                $burgers = $order->burgers;
+                $burgers = $burgers->map(fn($burger) => BurgerRepository::convertFromEntityToArray($burger));
+            }
+        } else {
+            if (session()->exists("burgers")) {
+                $burgers = session()->get("burgers");
+            }
+        }
         return view("burger", [
             "meats" => $meats,
             "breads" => $breads,
             "sides" => $sides,
+            "burgers" => $burgers ?? [],
         ]);
     }
 
@@ -44,7 +56,7 @@ class BurgerController extends Controller
         }
         if (auth()->check()) {
             $user = $request->user();
-            $order = OrderRepository::getUnpaidOrCreate($user);
+            $order = OrderRepository::getUnpaidOrCreate($user, true);
             BurgerRepository::createBurger($request->all()["burgers"], $order->id);
             if ($user->location_id) {
                 return redirect()->route("checkout.create");

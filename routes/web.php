@@ -35,6 +35,9 @@ Route::middleware("auth")->group(function () {
     Route::get("/orders/{order}", [OrderController::class, "show"])->name("order.show");
 });
 
+Route::get("/checkout/success", [CheckoutController::class, "success"])->name("checkout.success");
+Route::get("/checkout/cancel/{order}", [CheckoutController::class, "cancel"])->name("checkout.cancel");
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
