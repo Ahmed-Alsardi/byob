@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Helper;
+namespace App\Services;
 
+use App\Helper\OrderStatus;
 use App\Models\Location;
 use App\Models\Order;
 use App\Models\User;
@@ -9,7 +10,7 @@ use App\Repository\BurgerRepository;
 use App\Repository\LocationRepository;
 use App\Repository\OrderRepository;
 
-class LoginHelper
+class SessionServices
 {
 
     public static function addSessionDataToUser(User $user)

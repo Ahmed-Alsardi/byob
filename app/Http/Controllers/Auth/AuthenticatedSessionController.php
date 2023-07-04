@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Helper\LoginHelper;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
+use App\Services\SessionServices;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use Illuminate\View\View;
 
@@ -35,7 +34,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        LoginHelper::addSessionDataToUser($request->user());
+        SessionServices::addSessionDataToUser($request->user());
         if (session()->has("goToCheckout")) {
             session()->forget("goToCheckout");
             return redirect()->route("checkout.create");

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Helper\OrderStatus;
+use App\Helper\OrderStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

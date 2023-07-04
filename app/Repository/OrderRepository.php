@@ -2,9 +2,8 @@
 
 namespace App\Repository;
 
-use App\Http\Helper\OrderStatus;
+use App\Helper\OrderStatus;
 use App\Models\Order;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 
 class OrderRepository

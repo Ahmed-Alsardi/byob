@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Helper\OrderStatus;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
 use App\Repository\OrderRepository;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\URL;
 
 class OrderController extends Controller
 {
