@@ -16,7 +16,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = OrderRepository::getOrdersByUser(Auth::id());
+        $orders = OrderRepository::getOrdersByUser();
         return view("orders", [
             "orders" => $orders,
         ]);

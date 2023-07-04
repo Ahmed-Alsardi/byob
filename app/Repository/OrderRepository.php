@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Helper\OrderStatus;
+use App\Helper\UserRole;
 use App\Models\Order;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class OrderRepository
 {
@@ -30,12 +32,20 @@ class OrderRepository
             ]);
     }
 
-    public static function getOrdersByUser(int $userId): Collection
+    public static function getOrdersByUser(): Collection
     {
-        return Order::query()
-            ->where("customer_id", "=", $userId)
-//            ->where("status", "!=", OrderStatus::REQUIRED_PAYMENT)
-            ->get();
+        $user = auth()->user();
+        if ($user->role === UserRole::CUSTOMER) {
+            return Order::query()
+                ->where("customer_id", "=", $user->id)
+                ->get();
+        } else if ($user->role === UserRole::ADMIN) {
+            return Order::all();
+        } else {
+            return Order::query()
+                ->where("chef_id", "=", $user->id)
+                ->get();
+        }
     }
 
 }
