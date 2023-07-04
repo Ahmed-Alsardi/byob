@@ -46,6 +46,7 @@ class OrderController extends Controller
         if ($order->customer_id != Auth::id()) {
             return redirect()->route("order.index");
         }
+        $order->total_price = $order->total_price ?? OrderService::calculatePrice($order);
 //        if ($order->status === OrderStatus::REQUIRED_PAYMENT) {
 //            return redirect()->route("checkout.create");
 //        }

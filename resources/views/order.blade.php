@@ -8,6 +8,7 @@
                 <x-burger-card :index="$loop->index" :burger="$burger"/>
             @endforeach
         </div>
+        <p class="text-2xl font-bold">Total Price: {{$order["total_price"]}}</p>
 
         <div class="mb-6">
             <p class="text-lg font-semibold">Location:</p>

@@ -13,7 +13,6 @@ class CheckoutController extends Controller
     //
     public function create()
     {
-//        dd(session()->all());
         if (auth()->check()){
             $order = OrderRepository::getUnpaidOrder(auth()->user())->first();
             if (!$order) {
@@ -35,9 +34,14 @@ class CheckoutController extends Controller
             $burgers = session()->get("burgers");
             $location = session()->get("location");
         }
+        $totalPrice = OrderService::calculatePrice(null, $burgers);
+        if ($totalPrice <= 0 ) {
+            return redirect()->route("burgers.index");
+        }
         return view("checkout", [
             "burgers" => $burgers,
             "location" => $location,
+            "totalPrice" => $totalPrice,
         ]);
     }
 
@@ -47,6 +51,10 @@ class CheckoutController extends Controller
             return redirect()->route("login");
         }
         $order = OrderRepository::getUnpaidOrder(auth()->user())->first();
+        $totalPrice = OrderService::calculateAndSavePrice($order);
+        if ($totalPrice <= 0) {
+            return redirect()->route("burgers.index");
+        }
         if (OrderService::assignOrderToChef($order)){
             return redirect()->route("order.show", $order);
         } else {

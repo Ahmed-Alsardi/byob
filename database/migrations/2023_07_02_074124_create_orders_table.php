@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId("chef_id")->nullable();
             $table->foreign("chef_id")->references("id")->on("users");
             $table->string("status")->default(OrderStatus::REQUIRED_PAYMENT);
+            $table->float("total_price")->nullable();
             $table->string("city")->nullable();
             $table->string("street")->nullable();
             $table->string("house_number")->nullable();

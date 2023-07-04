@@ -16,11 +16,8 @@ class SessionServices
     public static function addSessionDataToUser(User $user)
     {
         if (session()->exists("burgers")) {
-            if (self::_existUnpaidOrder($user)) {
-                self::_addBurgersToUnpaidOrder($user);
-            } else {
-                self::_createNewOrder($user);
-            }
+            $order = OrderRepository::getUnpaidOrCreate($user);
+            self::_addBurgersToUnpaidOrder($user, $order);
         }
         if (session()->exists("location")) {
             self::_addLocationToUser($user);
@@ -43,9 +40,8 @@ class SessionServices
         BurgerRepository::createBurger($burgers, $order->id);
     }
 
-    private static function _addBurgersToUnpaidOrder(User $user)
+    private static function _addBurgersToUnpaidOrder(User $user, Order $order)
     {
-        $order = OrderRepository::getUnpaidOrder($user)->first();
         $burgers = session()->get("burgers");
         BurgerRepository::createBurger($burgers, $order->id);
     }

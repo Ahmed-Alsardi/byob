@@ -4,12 +4,14 @@ namespace App\Services;
 
 use App\Helper\OrderStatus;
 use App\Models\Chef;
+use App\Models\Order;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
 
     const ORDER_TIME = 5;
+    const BURGER_PRICE = 10;
     public static function assignOrderToChef($order): bool {
         return DB::transaction(function () use ($order) {
             $chefs = Chef::query()
@@ -23,7 +25,7 @@ class OrderService
             });
             $chefs = $chefs->sortBy("unavailable_until");
             $chef = $chefs->first();
-            if (!$chef) {
+            if ($chef == null) {
                 return false;
             }
             $chef->unavailable_until = now()->addMinutes(self::ORDER_TIME);
@@ -33,8 +35,39 @@ class OrderService
             $chef->save();
             return true;
         });
+    }
 
+    public static function rollbackChefAssignment($order): bool {
+        return DB::transaction(function () use ($order) {
+            $chef = $order->chef;
+            $chef->unavailable_until = now()->subMinutes(self::ORDER_TIME);
+            $order->status = OrderStatus::REQUIRED_PAYMENT;
+            $order->chef_id = null;
+            $order->save();
+            $chef->save();
+            return true;
+        });
+    }
 
+    public static function calculatePrice(Order $order = null, $burgers = null): float {
+        if ($order){
+            $quantity = $order->burgers->count();
+        } else if($burgers) {
+            $quantity = count($burgers);
+        } else {
+            return -1;
+        }
+        return $quantity * self::BURGER_PRICE;
+    }
+
+    public static function calculateAndSavePrice($order): float {
+        $total_price = self::calculatePrice($order);
+        if ($total_price <= 0) {
+            return -1;
+        }
+        $order->total_price = $total_price;
+        $order->save();
+        return $total_price;
     }
 
 }
