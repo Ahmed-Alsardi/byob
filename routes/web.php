@@ -24,7 +24,7 @@ Route::get('/', function () {
 Route::get("/burgers", [BurgerController::class, "index"])->name("burgers.index");
 Route::post("/burgers", [BurgerController::class, "store"])->name("burgers.store");
 
-Route::get("/location", [LocationController::class, "index"])->name("location.index");
+Route::get("/location", [LocationController::class, "create"])->name("location.create");
 Route::post("/location", [LocationController::class, "store"])->name("location.store");
 
 Route::get("/checkout", [CheckoutController::class, "create"])->name("checkout.create");

@@ -14,7 +14,6 @@ class LocationController extends Controller
      */
     public function index()
     {
-        return view("location");
     }
 
     /**
@@ -22,7 +21,22 @@ class LocationController extends Controller
      */
     public function create()
     {
-        //
+        if (!auth()->check()) {
+            if (session()->exists("location")) {
+                return view("location", [
+                    "location" => session()->get("location"),
+                ]);
+            }
+            return view("location");
+        }
+        $user = auth()->user();
+        $location = LocationRepository::getUserLocation($user);
+        if (!$location) {
+            return view("location");
+        }
+        return view("location", [
+            "location" => $location,
+        ]);
     }
 
     /**

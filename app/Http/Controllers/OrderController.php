@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
+use App\Repository\OrderRepository;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 
 class OrderController extends Controller
 {
@@ -13,8 +16,9 @@ class OrderController extends Controller
      */
     public function index()
     {
+        $orders = OrderRepository::getOrdersByUser(Auth::id());
         return view("orders", [
-            "orders" => Order::all(),
+            "orders" => $orders,
         ]);
     }
 

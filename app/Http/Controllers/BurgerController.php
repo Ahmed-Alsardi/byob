@@ -44,7 +44,7 @@ class BurgerController extends Controller
         }
         if (auth()->check()) {
             $user = $request->user();
-            $order = OrderRepository::createEmptyOrder($user);
+            $order = OrderRepository::getUnpaidOrCreate($user);
             BurgerRepository::createBurger($request->all()["burgers"], $order->id);
             if ($user->location_id) {
                 return redirect()->route("checkout.create");
@@ -55,7 +55,7 @@ class BurgerController extends Controller
                 return redirect()->route("checkout.create");
             }
         }
-        return redirect()->route("location.index");
+        return redirect()->route("location.create");
     }
 
     /**

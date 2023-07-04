@@ -16,20 +16,20 @@ class CheckoutController extends Controller
         if (auth()->check()){
             $order = OrderRepository::getUnpaidOrder(auth()->user())->first();
             if (!$order) {
-                return redirect()->route("home");
+                return redirect()->route("burgers.index");
             }
             $location = LocationRepository::getUserLocation(auth()->user());
             if (!$location) {
-                return redirect()->route("home");
+                return redirect()->route("location.create");
             }
             $burgers = $order->burgers;
             $burgers = $burgers->map(fn($burger) => BurgerRepository::convertFromEntityToArray($burger));
         } else {
             if (!session()->exists("burgers")) {
-                return redirect()->route("home");
+                return redirect()->route("burgers.index");
             }
             if (!session()->exists("location")) {
-                return redirect()->route("home");
+                return redirect()->route("location.create");
             }
             $burgers = session()->get("burgers");
             $location = session()->get("location");

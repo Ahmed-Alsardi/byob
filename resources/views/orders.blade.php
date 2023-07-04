@@ -8,7 +8,7 @@
             @foreach ($orders as $order)
                 <div class="flex items-center justify-between mb-4">
                     <a href="{{ route('order.show', $order['id']) }}"
-                       class="text-blue-500 hover:underline">{{ $order['id'] }}</a>
+                       class="text-blue-500 hover:underline">{{ $order['id'] }}: {{$order->burgers->count()}} Burgers</a>
                     <span class="text-gray-500">{{ $order['status'] }}</span>
                 </div>
             @endforeach

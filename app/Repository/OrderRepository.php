@@ -18,13 +18,22 @@ class OrderRepository
             ->get();
     }
 
-    public static function createEmptyOrder($user)
+    public static function getUnpaidOrCreate($user)
     {
-        return Order::query()
+        $order = self::getUnpaidOrder($user)->first();
+        return $order ?? Order::query()
             ->create([
                 "customer_id" => $user->id,
                 "status" => OrderStatus::REQUIRED_PAYMENT,
             ]);
+    }
+
+    public static function getOrdersByUser(int $userId): Collection
+    {
+        return Order::query()
+            ->where("customer_id", "=", $userId)
+//            ->where("status", "!=", OrderStatus::REQUIRED_PAYMENT)
+            ->get();
     }
 
 }

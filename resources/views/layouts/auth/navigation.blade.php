@@ -18,6 +18,9 @@
                     <x-auth.nav-link :href="route('order.index')" :active="request()->routeIs('order.index')">
                         {{ __('Orders') }}
                     </x-auth.nav-link>
+                    <x-auth.nav-link :href="route('location.create')" :active="request()->routeIs('location.create')">
+                        {{ __('Location') }}
+                    </x-auth.nav-link>
                 </div>
             </div>
 
