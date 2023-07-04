@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helper\OrderStatus;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
@@ -43,7 +44,15 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        //
+        if ($order->customer_id != Auth::id()) {
+            return redirect()->route("order.index");
+        }
+//        if ($order->status === OrderStatus::REQUIRED_PAYMENT) {
+//            return redirect()->route("checkout.create");
+//        }
+        return view("order", [
+            "order" => $order
+        ]);
     }
 
     /**

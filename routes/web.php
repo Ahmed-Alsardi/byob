@@ -30,8 +30,10 @@ Route::post("/location", [LocationController::class, "store"])->name("location.s
 Route::get("/checkout", [CheckoutController::class, "create"])->name("checkout.create");
 Route::post("/checkout", [CheckoutController::class, "store"])->name("checkout.store");
 
-Route::get("/orders", [OrderController::class, "index"])->name("order.index");
-Route::get("/orders/{order}", [OrderController::class, "show"])->name("order.show");
+Route::middleware("auth")->group(function () {
+    Route::get("/orders", [OrderController::class, "index"])->name("order.index");
+    Route::get("/orders/{order}", [OrderController::class, "show"])->name("order.show");
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
