@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\UserRole;
 use App\Http\Requests\StoreComplaintRequest;
 use App\Http\Requests\UpdateComplaintRequest;
 use App\Models\Complaint;
+use App\Repository\ComplaintRepository;
 
 class ComplaintController extends Controller
 {
@@ -13,7 +15,16 @@ class ComplaintController extends Controller
      */
     public function index()
     {
-        //
+        if (auth()->user()->role === UserRole::CUSTOMER) {
+            $complaints = ComplaintRepository::getComplaintsByUser(auth()->user());
+        } else if (auth()->user()->role === UserRole::ADMIN){
+            $complaints = ComplaintRepository::getAll();
+        } else {
+            return redirect()->route("home");
+        }
+        return view("complaints", [
+            "complaints" => $complaints
+        ]);
     }
 
     /**
