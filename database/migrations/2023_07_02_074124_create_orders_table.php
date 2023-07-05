@@ -18,7 +18,9 @@ return new class extends Migration
             $table->foreign("customer_id")->references("id")->on("users");
             $table->foreignId("chef_id")->nullable();
             $table->foreign("chef_id")->references("id")->on("users");
+            $table->timestamp("chef_assigned_at")->nullable();
             $table->string("status")->default(OrderStatus::REQUIRED_PAYMENT);
+            $table->timestamp("completed_at")->nullable();
             $table->float("total_price")->nullable();
             $table->string("city")->nullable();
             $table->string("street")->nullable();

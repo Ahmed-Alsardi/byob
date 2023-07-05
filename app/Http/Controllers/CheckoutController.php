@@ -20,6 +20,7 @@ class CheckoutController extends Controller
             if (!$order) {
                 return redirect()->route("burgers.index");
             }
+//            OrderService::assignOrderToChef($order);
             $location = LocationRepository::getUserLocation(auth()->user());
             if (!$location) {
                 return redirect()->route("location.create");
@@ -61,7 +62,7 @@ class CheckoutController extends Controller
         if (OrderService::assignOrderToChef($order)) {
             return auth()
                 ->user()
-                ->checkout(["price_1NQ8lCFTh5hPDE8Wx8ItBCg0" => $burgerCounts], [
+                ->checkout([env("STRIPE_PRICE_ID") => $burgerCounts], [
                     "success_url" => route("checkout.success", $order) . "?session_id={CHECKOUT_SESSION_ID}",
                     "cancel_url" => route("checkout.cancel", $order),
                 ]);
@@ -75,7 +76,7 @@ class CheckoutController extends Controller
         if ($order->customer_id !== $request->user()->id) {
             abort(403);
         }
-        if ($or)
+//        if ($or)
         EmailNotificationService::sendReceiptEmail($order);
         return redirect()->route("order.index");
     }

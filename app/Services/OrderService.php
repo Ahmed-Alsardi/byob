@@ -13,25 +13,19 @@ class OrderService
 
     const ORDER_TIME = 5;
     const BURGER_PRICE = 1000;
-    public static function assignOrderToChef($order): bool {
+
+    public static function assignOrderToChef($order): bool
+    {
         return DB::transaction(function () use ($order) {
-            $chefs = Chef::query()
-                ->orWhere("unavailable_until", "<", now())
-                ->orWhere("unavailable_until", "=", null)
-                ->get();
-            // sort the chefs based on the unavailability time
-            $chefs = $chefs->map(function ($c) {
-                $c->unavailable_until = $c->unavailable_until ?? now()->subDay();
-                return $c;
-            });
-            $chefs = $chefs->sortBy("unavailable_until");
-            $chef = $chefs->first();
-            if ($chef == null) {
+            try {
+                $chef = self::_getChef();
+            } catch (\Exception $e) {
                 return false;
             }
-            $chef->unavailable_until = now()->addMinutes(self::ORDER_TIME);
+            $chef->available = false;
             $order->status = OrderStatus::IN_PROGRESS;
             $order->chef_id = $chef->id;
+            $order->chef_assigned_at = now();
             $customerLocation = Customer::query()->where("id", "=", $order->customer_id)->first()->location;
             $order->city = $customerLocation->city;
             $order->street = $customerLocation->street;
@@ -42,11 +36,13 @@ class OrderService
         });
     }
 
-    public static function rollbackChefAssignment($order): bool {
+    public static function rollbackChefAssignment($order): bool
+    {
         return DB::transaction(function () use ($order) {
             $chef = $order->chef;
-            $chef->unavailable_until = now()->subMinutes(self::ORDER_TIME);
+            $chef->available = true;
             $order->status = OrderStatus::REQUIRED_PAYMENT;
+            $order->chef_assigned_at = null;
             $order->chef_id = null;
             $order->city = null;
             $order->street = null;
@@ -57,10 +53,11 @@ class OrderService
         });
     }
 
-    public static function calculatePrice(Order $order = null, $burgers = null): float {
-        if ($order){
+    public static function calculatePrice(Order $order = null, $burgers = null): float
+    {
+        if ($order) {
             $quantity = $order->burgers->count();
-        } else if($burgers) {
+        } else if ($burgers) {
             $quantity = count($burgers);
         } else {
             return -1;
@@ -68,7 +65,8 @@ class OrderService
         return $quantity * self::BURGER_PRICE;
     }
 
-    public static function calculateAndSavePrice($order): float {
+    public static function calculateAndSavePrice($order): float
+    {
         $total_price = self::calculatePrice($order);
         if ($total_price <= 0) {
             return -1;
@@ -78,4 +76,44 @@ class OrderService
         return $total_price;
     }
 
+    /**
+     * @throws \Exception
+     */
+    private static function _getChef()
+    {
+        $chefs = Chef::query()
+            ->where("available", "=", true)
+            ->get();
+        if ($chefs->count() == 0) {
+            throw new \Exception("No chefs available");
+        }
+        if ($chefs->count() == 1) {
+            return $chefs->first();
+        }
+        // get the chef of the last order
+        $lastOrder = Order::query()
+            ->where("chef_id", "!=", null)
+            ->orderBy("chef_assigned_at", "desc")
+            ->first();
+        if ($lastOrder == null) {
+            $chef = $chefs->first();
+            if ($chef == null) {
+                throw new \Exception("No chefs available");
+            }
+            return $chef;
+        }
+        $chef = $chefs
+            ->where("id", ">", $lastOrder->chef_id)
+            ->sortBy("id")
+            ->first();
+//        dd($chef);
+        // sort the chefs based on the unavailability time
+        if ($chef == null) {
+            $chef = $chefs->first();
+            if ($chef == null) {
+                throw new \Exception("No chefs available");
+            }
+        }
+        return $chef;
+    }
 }

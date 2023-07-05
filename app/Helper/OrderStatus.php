@@ -8,6 +8,6 @@ class OrderStatus
     const PENDING = "pending";
     const IN_PROGRESS = "in_progress";
     const IN_DELIVERY = "in_delivery";
-    const DELIVERED = "delivered";
+    const COMPLETED = "completed";
 
 }
