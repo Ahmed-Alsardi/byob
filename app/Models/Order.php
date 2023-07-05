@@ -48,4 +48,8 @@ class Order extends Model
             "house_number" => $this->house_number,
         ];
     }
+
+    public function complaint() {
+        return $this->hasOne(Complaint::class);
+    }
 }

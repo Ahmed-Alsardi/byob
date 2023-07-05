@@ -16,7 +16,7 @@
             <p>Street: {{ $order['street'] ?? "...." }}</p>
             <p>House Number: {{ $order['house_number'] ?? "...." }}</p>
         </div>
-        @if(auth()->id() == $order->chef_id)
+        @if(auth()->id() == $order->chef_id && $order->status == \App\Helper\OrderStatus::IN_PROGRESS)
             <div class="flex justify-center items-center">
                 <form action="{{route('order.complete', $order)}}" method="POST">
                     @csrf
@@ -24,6 +24,20 @@
                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
                 </form>
             </div>
+        @endif
+        @if(auth()->id() == $order->customer_id &&
+            ($order->status == \App\Helper\OrderStatus::COMPLETED || $order->status == \App\Helper\OrderStatus::COMPLAINT))
+            @if(!$order->complaint)
+                <a href="{{route('order.complaint', $order)}}"
+                   class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    Create Complaint
+                </a>
+            @else
+                <a href="{{route('complaint.show', $order->complaint)}}"
+                   class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    Show Complaint
+                </a>
+            @endif
         @endif
     </div>
 </x-auth-app-layout>

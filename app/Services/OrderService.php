@@ -6,6 +6,7 @@ use App\Helper\OrderStatus;
 use App\Models\Chef;
 use App\Models\Customer;
 use App\Models\Order;
+use App\Repository\ComplaintRepository;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
@@ -129,6 +130,15 @@ class OrderService
             } catch (\Exception $e) {
                 return false;
             }
+        });
+    }
+
+    public static function complaintOrder(Order $order, string $message)
+    {
+        return DB::transaction(function () use ($order, $message) {
+            $order->status = OrderStatus::COMPLAINT;
+            $order->save();
+            return ComplaintRepository::createComplaint($order, $message);
         });
     }
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BurgerController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
@@ -34,6 +35,12 @@ Route::middleware("auth")->group(function () {
     Route::get("/orders", [OrderController::class, "index"])->name("order.index");
     Route::get("/orders/{order}", [OrderController::class, "show"])->name("order.show");
     Route::post("/orders/{order}/complete", [OrderController::class, "complete"])->name("order.complete");
+    Route::get("/orders/{order}/complaint", [OrderController::class, "complaint"])->name("order.complaint");
+    Route::post("/orders/{order}/complaint", [OrderController::class, "storeComplaint"])->name("order.storeComplaint");
+});
+
+Route::middleware("auth")->group(function() {
+   Route::get("/complaints/{complaint}", [ComplaintController::class, "show"])->name("complaint.show");
 });
 
 Route::get("/checkout/success/{order}", [CheckoutController::class, "success"])->name("checkout.success");

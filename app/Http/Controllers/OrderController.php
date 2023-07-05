@@ -10,8 +10,7 @@ use App\Models\Order;
 use App\Repository\OrderRepository;
 use App\Services\EmailNotificationService;
 use App\Services\OrderService;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -94,5 +93,29 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+    public function complaint(Order $order) {
+        if (auth()->user()->id !== $order->customer_id) {
+            return redirect()->route("order.index");
+        }
+        return view("complaint-create", [
+            "order" => $order
+        ]);
+    }
+
+    public function storeComplaint(Request $request, Order $order) {
+        if (auth()->user()->id !== $order->customer_id) {
+            return redirect()->route("order.index");
+        }
+        if ($order->complaint != null) {
+            return redirect()->route("order.index");
+//            return redirect()->route("complaint.show", $order->complaint->id);
+        }
+        $validated = $request->validate([
+            "message" => "required|string|max:255"
+        ]);
+        $complaint = OrderService::complaintOrder($order, $validated["message"]);
+        return redirect()->route("complaint.show", $complaint);
     }
 }
