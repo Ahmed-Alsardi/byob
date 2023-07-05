@@ -106,7 +106,6 @@ class OrderService
             ->where("id", ">", $lastOrder->chef_id)
             ->sortBy("id")
             ->first();
-//        dd($chef);
         // sort the chefs based on the unavailability time
         if ($chef == null) {
             $chef = $chefs->first();
@@ -115,5 +114,21 @@ class OrderService
             }
         }
         return $chef;
+    }
+
+    public static function completeOrder($chef, Order $order)
+    {
+        return DB::transaction(function () use ($chef, $order) {
+            try {
+                $chef->available = true;
+                $order->status = OrderStatus::COMPLETED;
+                $order->completed_at = now();
+                $order->save();
+                $chef->save();
+                return true;
+            } catch (\Exception $e) {
+                return false;
+            }
+        });
     }
 }

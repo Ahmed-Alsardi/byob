@@ -8,8 +8,10 @@ use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
 use App\Repository\OrderRepository;
+use App\Services\EmailNotificationService;
 use App\Services\OrderService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 
 class OrderController extends Controller
 {
@@ -72,6 +74,18 @@ class OrderController extends Controller
     public function update(UpdateOrderRequest $request, Order $order)
     {
         //
+    }
+
+    public function complete(Order $order) {
+       if (auth()->user()->id !== $order->chef_id) {
+           return redirect()->route("order.index");
+       }
+       if (OrderService::completeOrder(auth()->user(), $order)){
+           EmailNotificationService::sendOrderCompletedEmail($order);
+       } else {
+           abort(500);
+       }
+       return redirect()->route("order.index");
     }
 
     /**

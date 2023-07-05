@@ -16,5 +16,14 @@
             <p>Street: {{ $order['street'] ?? "...." }}</p>
             <p>House Number: {{ $order['house_number'] ?? "...." }}</p>
         </div>
+        @if(auth()->id() == $order->chef_id)
+            <div class="flex justify-center items-center">
+                <form action="{{route('order.complete', $order)}}" method="POST">
+                    @csrf
+                    <input type="submit" value="Complete"
+                           class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                </form>
+            </div>
+        @endif
     </div>
 </x-auth-app-layout>
