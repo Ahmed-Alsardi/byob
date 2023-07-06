@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId("order_id");
             $table->foreign("order_id")->on("orders")->references("id");
-            $table->boolean("is_resolved")->default(false);
+            $table->boolean("refund")->nullable();
             $table->string("customer_message");
             $table->string("admin_message")->nullable();
             $table->foreignId("admin_id")->nullable();

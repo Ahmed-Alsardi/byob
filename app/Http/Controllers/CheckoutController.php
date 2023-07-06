@@ -73,6 +73,7 @@ class CheckoutController extends Controller
 
     public function success(Request $request, Order $order) {
         $checkoutSession = $request->user()->stripe()->checkout->sessions->retrieve($request->get('session_id'));
+        OrderService::savePaymentIntentId($order, $checkoutSession->payment_intent);
         if ($order->customer_id !== $request->user()->id) {
             abort(403);
         }

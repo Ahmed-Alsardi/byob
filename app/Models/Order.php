@@ -52,4 +52,8 @@ class Order extends Model
     public function complaint() {
         return $this->hasOne(Complaint::class);
     }
+
+    public function refund() {
+        return $this->customer->refund($this->payment_intent_id);
+    }
 }

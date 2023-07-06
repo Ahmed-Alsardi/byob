@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string("status")->default(OrderStatus::REQUIRED_PAYMENT);
             $table->timestamp("completed_at")->nullable();
             $table->float("total_price")->nullable();
+            $table->string("payment_intent_id")->nullable();
             $table->string("city")->nullable();
             $table->string("street")->nullable();
             $table->string("house_number")->nullable();

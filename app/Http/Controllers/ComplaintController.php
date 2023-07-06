@@ -7,6 +7,7 @@ use App\Http\Requests\StoreComplaintRequest;
 use App\Http\Requests\UpdateComplaintRequest;
 use App\Models\Complaint;
 use App\Repository\ComplaintRepository;
+use App\Services\ComplaintService;
 
 class ComplaintController extends Controller
 {
@@ -66,7 +67,11 @@ class ComplaintController extends Controller
      */
     public function update(UpdateComplaintRequest $request, Complaint $complaint)
     {
-        //
+        if ($request->user()->role !== UserRole::ADMIN) {
+            abort(403);
+        }
+        ComplaintService::resolveComplaint($complaint, $request->refund, $request->admin_message, $request->user());
+        return redirect()->route("complaint.index");
     }
 
     /**

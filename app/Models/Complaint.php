@@ -18,4 +18,9 @@ class Complaint extends Model
     {
         return $this->order->customer;
     }
+
+    public function is_resolved(): bool
+    {
+        return $this->refund !== null;
+    }
 }
