@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->string("role")->default(UserRole::CUSTOMER);
             $table->boolean("available")->default(true);
+            $table->timestamp("unavailable_until")->default(now());
             $table->rememberToken();
             $table->timestamps();
         });

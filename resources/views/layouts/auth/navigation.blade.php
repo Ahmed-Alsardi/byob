@@ -26,6 +26,11 @@
                             {{ __('Complaints') }}
                         </x-auth.nav-link>
                     @endif
+                    @if(auth()->user()->role == \App\Helper\UserRole::ADMIN)
+                        <x-auth.nav-link :href="route('chef.index')" :active="request()->routeIs('chef.index')">
+                            {{ __('Chefs') }}
+                        </x-auth.nav-link>
+                    @endif
                 </div>
             </div>
 

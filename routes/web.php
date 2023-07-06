@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BurgerController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ChefController;
 use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrderController;
@@ -43,6 +44,12 @@ Route::middleware("auth")->group(function() {
    Route::get("/complaints", [ComplaintController::class, "index"])->name("complaint.index");
    Route::get("/complaints/{complaint}", [ComplaintController::class, "show"])->name("complaint.show");
    Route::put("/complaints/{complaint}", [ComplaintController::class, "update"])->name("complaint.update");
+});
+
+Route::middleware("auth")->group(function() {
+   Route::get("chefs", [ChefController::class, "index"])->name("chef.index");
+   Route::get("chefs/{chef}", [ChefController::class, "show"])->name("chef.show");
+   Route::get("chefs/create", [ChefController::class, "create"])->name("chef.create");
 });
 
 Route::get("/checkout/success/{order}", [CheckoutController::class, "success"])->name("checkout.success");

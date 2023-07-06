@@ -82,9 +82,7 @@ class OrderService
      */
     private static function _getChef()
     {
-        $chefs = Chef::query()
-            ->where("available", "=", true)
-            ->get();
+        $chefs = ChefRepository::getAllAvailableChef();
         if ($chefs->count() == 0) {
             throw new \Exception("No chefs available");
         }

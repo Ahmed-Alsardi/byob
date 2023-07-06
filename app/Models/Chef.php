@@ -30,6 +30,6 @@ class Chef extends User
     }
 
     public function isAvailable(): bool {
-        return $this->unavailable_until < now();
+        return $this->available && $this->unavailable_until < now();
     }
 }
