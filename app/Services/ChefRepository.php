@@ -31,4 +31,13 @@ class ChefRepository
                 "password" => $password,
             ]);
     }
+
+    public static function updateAvailability(mixed $user, mixed $unavailable_for)
+    {
+        return Chef::query()
+            ->where("id", "=", $user->id)
+            ->update([
+                "unavailable_until" => now()->addMinutes($unavailable_for)
+            ]);
+    }
 }

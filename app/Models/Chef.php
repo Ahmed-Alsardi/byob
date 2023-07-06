@@ -29,7 +29,4 @@ class Chef extends User
         return $this->hasMany(Order::class, "chef_id", "id");
     }
 
-    public function isAvailable(): bool {
-        return $this->available && $this->unavailable_until < now();
-    }
 }

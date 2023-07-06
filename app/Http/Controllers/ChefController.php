@@ -35,4 +35,15 @@ class ChefController extends Controller
         ChefService::createChef($validated);
         return redirect()->route("chef.index");
     }
+
+    public function changeAvailability(Request $request) {
+        if ($request->user()->role !== UserRole::CHEF) {
+            abort(403);
+        }
+        $validated = $request->validate([
+            "unavailable_for" => "required|int|min:-1|max:180"
+        ]);
+        ChefRepository::updateAvailability($request->user(), $validated["unavailable_for"]);
+        return redirect()->route("profile.edit");
+    }
 }

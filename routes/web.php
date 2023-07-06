@@ -51,6 +51,7 @@ Route::middleware("auth")->group(function() {
    Route::get("/chefs/create", [ChefController::class, "create"])->name("chef.create");
    Route::post("/chefs/create", [ChefController::class, "store"])->name("chef.store");
    Route::get("/chefs/{chef}", [ChefController::class, "show"])->name("chef.show");
+   Route::put("/chefs/{chef}/available", [ChefController::class, "changeAvailability"])->name("chef.available");
 });
 
 Route::get("/checkout/success/{order}", [CheckoutController::class, "success"])->name("checkout.success");
