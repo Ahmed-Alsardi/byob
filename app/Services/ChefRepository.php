@@ -21,4 +21,14 @@ class ChefRepository
             ->where("unavailable_until", "<", now())
             ->get();
     }
+
+    public static function createChef(mixed $name, mixed $email, mixed $password)
+    {
+        return Chef::query()
+            ->create([
+                "name" => $name,
+                "email" => $email,
+                "password" => $password,
+            ]);
+    }
 }

@@ -47,9 +47,10 @@ Route::middleware("auth")->group(function() {
 });
 
 Route::middleware("auth")->group(function() {
-   Route::get("chefs", [ChefController::class, "index"])->name("chef.index");
-   Route::get("chefs/{chef}", [ChefController::class, "show"])->name("chef.show");
-   Route::get("chefs/create", [ChefController::class, "create"])->name("chef.create");
+   Route::get("/chefs", [ChefController::class, "index"])->name("chef.index");
+   Route::get("/chefs/create", [ChefController::class, "create"])->name("chef.create");
+   Route::post("/chefs/create", [ChefController::class, "store"])->name("chef.store");
+   Route::get("/chefs/{chef}", [ChefController::class, "show"])->name("chef.show");
 });
 
 Route::get("/checkout/success/{order}", [CheckoutController::class, "success"])->name("checkout.success");
