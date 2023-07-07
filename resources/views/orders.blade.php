@@ -4,15 +4,18 @@
 
         <div class="bg-white p-4 rounded-lg shadow-md">
             <h2 class="text-2xl font-bold mb-4">All Orders</h2>
-
-            @foreach ($orders as $order)
-                <div class="flex items-center justify-around mb-4">
-                    <a href="{{ route('order.show', $order['id']) }}"
-                       class="text-blue-500 hover:underline">{{ $order['id'] }}: {{$order->burgers->count()}} Burgers</a>
-                    <span class="text-gray-500">{{ $order['total_price'] }}</span>
-                    <span class="text-gray-500">{{ $order['status'] }}</span>
-                </div>
-            @endforeach
+            <div id="orders-container">
+                @foreach ($orders as $order)
+                    <div class="flex items-center justify-around mb-4">
+                        <a href="{{ route('order.show', $order['id']) }}"
+                           class="text-blue-500 hover:underline">{{ $order['id'] }}: {{$order->burgers->count()}}
+                            Burgers</a>
+                        <span class="text-gray-500">{{ $order['total_price'] }}</span>
+                        <span class="text-gray-500">{{ $order['status'] }}</span>
+                    </div>
+                @endforeach
+            </div>
         </div>
     </div>
+    <script src="{{asset('orderPooling.js')}}"></script>
 </x-auth-app-layout>

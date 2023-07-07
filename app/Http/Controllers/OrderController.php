@@ -17,9 +17,14 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $orders = OrderRepository::getOrdersByUser();
+        if ($request->get("api", false)){
+            return response()->json([
+                "orders" => $orders
+            ]);
+        }
         return view("orders", [
             "orders" => $orders,
         ]);
