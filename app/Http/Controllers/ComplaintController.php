@@ -8,9 +8,16 @@ use App\Http\Requests\UpdateComplaintRequest;
 use App\Models\Complaint;
 use App\Repository\ComplaintRepository;
 use App\Services\ComplaintService;
+use Illuminate\Http\Request;
 
 class ComplaintController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(Complaint::class, "complaint");
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -18,7 +25,7 @@ class ComplaintController extends Controller
     {
         if (auth()->user()->role === UserRole::CUSTOMER) {
             $complaints = ComplaintRepository::getComplaintsByUser(auth()->user());
-        } else if (auth()->user()->role === UserRole::ADMIN){
+        } else if (auth()->user()->role === UserRole::ADMIN) {
             $complaints = ComplaintRepository::getAll();
         } else {
             return redirect()->route("home");
@@ -47,7 +54,7 @@ class ComplaintController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Complaint $complaint)
+    public function show(Request $request, Complaint $complaint)
     {
         return view("complaint", [
             "complaint" => $complaint
@@ -67,9 +74,6 @@ class ComplaintController extends Controller
      */
     public function update(UpdateComplaintRequest $request, Complaint $complaint)
     {
-        if ($request->user()->role !== UserRole::ADMIN) {
-            abort(403);
-        }
         ComplaintService::resolveComplaint($complaint, $request->refund, $request->admin_message, $request->user());
         return redirect()->route("complaint.index");
     }

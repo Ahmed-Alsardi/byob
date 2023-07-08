@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helper\UserRole;
 use App\Models\BurgerCustomization;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -13,7 +14,7 @@ class BurgerCustomizationPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->role === UserRole::ADMIN;
     }
 
     /**
@@ -21,7 +22,7 @@ class BurgerCustomizationPolicy
      */
     public function view(User $user, BurgerCustomization $burgerCustomization): bool
     {
-        //
+        return $user->role === UserRole::ADMIN;
     }
 
     /**
@@ -30,6 +31,7 @@ class BurgerCustomizationPolicy
     public function create(User $user): bool
     {
         //
+        return $user->role === UserRole::ADMIN;
     }
 
     /**
@@ -38,6 +40,7 @@ class BurgerCustomizationPolicy
     public function update(User $user, BurgerCustomization $burgerCustomization): bool
     {
         //
+        return $user->role === UserRole::ADMIN;
     }
 
     /**
@@ -46,6 +49,7 @@ class BurgerCustomizationPolicy
     public function delete(User $user, BurgerCustomization $burgerCustomization): bool
     {
         //
+        return $user->role === UserRole::ADMIN;
     }
 
     /**
@@ -54,6 +58,7 @@ class BurgerCustomizationPolicy
     public function restore(User $user, BurgerCustomization $burgerCustomization): bool
     {
         //
+        return $user->role === UserRole::ADMIN;
     }
 
     /**
@@ -62,5 +67,6 @@ class BurgerCustomizationPolicy
     public function forceDelete(User $user, BurgerCustomization $burgerCustomization): bool
     {
         //
+        return $user->role === UserRole::ADMIN;
     }
 }

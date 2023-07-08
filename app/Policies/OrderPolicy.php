@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helper\UserRole;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -21,7 +22,12 @@ class OrderPolicy
      */
     public function view(User $user, Order $order): bool
     {
-        //
+        if ($user->id === $order->customer_id ||
+            $user->id === $order->chef_id ||
+            $user->role === UserRole::ADMIN) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -29,7 +35,7 @@ class OrderPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->role === UserRole::CUSTOMER;
     }
 
     /**

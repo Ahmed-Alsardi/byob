@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Helper\UserRole;
 use App\Models\Complaint;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -13,7 +14,7 @@ class ComplaintPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -21,7 +22,7 @@ class ComplaintPolicy
      */
     public function view(User $user, Complaint $complaint): bool
     {
-        //
+        return $this->sameUserOrAdmin($user, $complaint);
     }
 
     /**
@@ -29,7 +30,7 @@ class ComplaintPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->role === UserRole::CUSTOMER;
     }
 
     /**
@@ -37,7 +38,7 @@ class ComplaintPolicy
      */
     public function update(User $user, Complaint $complaint): bool
     {
-        //
+        return $user->role === UserRole::ADMIN;
     }
 
     /**
@@ -62,5 +63,18 @@ class ComplaintPolicy
     public function forceDelete(User $user, Complaint $complaint): bool
     {
         //
+    }
+
+    /**
+     * @param User $user
+     * @param Complaint $complaint
+     * @return bool
+     */
+    public function sameUserOrAdmin(User $user, Complaint $complaint): bool
+    {
+        if ($user->role === UserRole::ADMIN || $user->id == $complaint->order->customer_id) {
+            return true;
+        }
+        return false;
     }
 }

@@ -67,7 +67,7 @@ class CheckoutController extends Controller
                     "cancel_url" => route("checkout.cancel", $order),
                 ]);
         } else {
-            abort(400, "No available chefs");
+            abort(503, "No available chefs");
         }
     }
 
