@@ -16,6 +16,22 @@ class BurgerController extends Controller
      */
     public function index()
     {
+        /**
+         * TODO:
+         * The below $meats, $breads, and $sides
+         * We are doing 3 calls to the database which is unnecessary
+         * We can decrease it to 1 DB call by getting them all in one query
+         * and then utilize laravel collection to filter and display it as needed
+         * ex:
+         * $cuz = BurgerCustomizationRepository::getCustomizations() //getting all in one query
+         * $meats = $cuz->where('type','meats')
+         * $breads = $cuz->where('type','breads')
+         * $sides = $cuz->where('type','sides')
+         *
+         * And to optimize this even further since we know that the sides and customization
+         * will not be changed much, we should introduce a caching layer to prevent db calls
+         * every time someone views the page, read about laravel caching
+         */
         $meats = BurgerCustomizationRepository::getMeats();
         $breads = BurgerCustomizationRepository::getBreads();
         $sides = BurgerCustomizationRepository::getSides();
