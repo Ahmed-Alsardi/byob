@@ -18,7 +18,22 @@ class BurgerCustomizationSeeder extends Seeder
     {
         $this->disableForeignKeys();
         $this->truncateTable("burger_customizations");
-        BurgerCustomization::factory()->count(20)->create();
+        $meats = ["meat", "chicken"];
+        $breads = ["white", "brown"];
+        $sides = ["tomato", "onion", "lettuce", "ketchup", "garlic", "mayo"];
+        $this->addCustomization("meat", $meats);
+        $this->addCustomization("bread", $breads);
+        $this->addCustomization("side", $sides);
         $this->enableForeignKeys();
+    }
+
+    private function addCustomization(string $category, array $names): void
+    {
+        foreach ($names as $name) {
+            BurgerCustomization::factory()->create([
+                "category" => $category,
+                "name" => $name,
+            ]);
+        }
     }
 }

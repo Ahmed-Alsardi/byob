@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\UserRole;
 use App\Models\Order;
 use App\Repository\BurgerRepository;
 use App\Repository\LocationRepository;
@@ -13,9 +14,12 @@ use Illuminate\Http\Request;
 class CheckoutController extends Controller
 {
     //
-    public function create()
+    public function create(Request $request)
     {
         if (auth()->check()) {
+            if ($request->user()->role !== UserRole::CUSTOMER) {
+                abort(403, "Only customers can checkout");
+            }
             $order = OrderRepository::getUnpaidOrder(auth()->user())->first();
             if (!$order) {
                 return redirect()->route("burgers.index");
