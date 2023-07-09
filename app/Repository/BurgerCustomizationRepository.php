@@ -70,4 +70,9 @@ class BurgerCustomizationRepository
             ->where("category", $category)
             ->get();
     }
+
+    public static function getCustomizations()
+    {
+        return BurgerCustomization::all();
+    }
 }

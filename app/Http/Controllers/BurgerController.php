@@ -8,6 +8,7 @@ use App\Models\Burger;
 use App\Repository\BurgerCustomizationRepository;
 use App\Repository\BurgerRepository;
 use App\Repository\OrderRepository;
+use Illuminate\Support\Facades\Cache;
 
 class BurgerController extends Controller
 {
@@ -32,9 +33,12 @@ class BurgerController extends Controller
          * will not be changed much, we should introduce a caching layer to prevent db calls
          * every time someone views the page, read about laravel caching
          */
-        $meats = BurgerCustomizationRepository::getMeats();
-        $breads = BurgerCustomizationRepository::getBreads();
-        $sides = BurgerCustomizationRepository::getSides();
+
+//        $cus = BurgerCustomizationRepository::getCustomizations();
+        $cus = Cache::rememberForever("customizations", fn() => BurgerCustomizationRepository::getCustomizations());
+        $meats = $cus->where("category", "meat");
+        $breads = $cus->where("category", "bread");
+        $sides = $cus->where("category", "side");
         if (auth()->check()) {
             $order = OrderRepository::getUnpaidOrder(auth()->user())->first();
             if ($order) {
