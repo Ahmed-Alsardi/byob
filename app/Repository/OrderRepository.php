@@ -38,12 +38,14 @@ class OrderRepository
         if ($user->role === UserRole::CUSTOMER) {
             return Order::query()
                 ->where("customer_id", "=", $user->id)
+                ->with("burgers")
                 ->get();
         } else if ($user->role === UserRole::ADMIN) {
-            return Order::all();
+            return Order::with('burgers')->get();
         } else {
             return Order::query()
                 ->where("chef_id", "=", $user->id)
+                ->with("burgers")
                 ->get();
         }
     }

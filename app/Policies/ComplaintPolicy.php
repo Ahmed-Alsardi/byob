@@ -14,7 +14,7 @@ class ComplaintPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->role  !== UserRole::CHEF;
     }
 
     /**
