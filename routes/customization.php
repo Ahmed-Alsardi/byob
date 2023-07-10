@@ -17,4 +17,6 @@ Route::middleware("auth")->group(function () {
         ->name("customization.edit");
     Route::put("/customizations/{burgerCustomization}", [BurgerCustomizationController::class, "update"])
         ->name("customization.update");
+    Route::delete("/customizations/{burgerCustomization}", [BurgerCustomizationController::class, "destroy"])
+        ->name("customization.destroy");
 });

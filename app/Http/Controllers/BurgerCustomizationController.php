@@ -47,7 +47,9 @@ class BurgerCustomizationController extends Controller
      */
     public function show(BurgerCustomization $burgerCustomization)
     {
-        //
+        return view("customization.show", [
+            "customization" => $burgerCustomization,
+        ]);
     }
 
     /**
