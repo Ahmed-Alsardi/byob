@@ -46,3 +46,4 @@ require __DIR__.'/auth.php';
 require __DIR__.'/order.php';
 require __DIR__.'/chef.php';
 require __DIR__.'/complaint.php';
+require __DIR__.'/customization.php';

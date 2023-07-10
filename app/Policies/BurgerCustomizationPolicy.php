@@ -14,7 +14,7 @@ class BurgerCustomizationPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->role === UserRole::ADMIN;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -22,7 +22,7 @@ class BurgerCustomizationPolicy
      */
     public function view(User $user, BurgerCustomization $burgerCustomization): bool
     {
-        return $user->role === UserRole::ADMIN;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -30,8 +30,7 @@ class BurgerCustomizationPolicy
      */
     public function create(User $user): bool
     {
-        //
-        return $user->role === UserRole::ADMIN;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -39,8 +38,7 @@ class BurgerCustomizationPolicy
      */
     public function update(User $user, BurgerCustomization $burgerCustomization): bool
     {
-        //
-        return $user->role === UserRole::ADMIN;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -48,8 +46,7 @@ class BurgerCustomizationPolicy
      */
     public function delete(User $user, BurgerCustomization $burgerCustomization): bool
     {
-        //
-        return $user->role === UserRole::ADMIN;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -57,8 +54,7 @@ class BurgerCustomizationPolicy
      */
     public function restore(User $user, BurgerCustomization $burgerCustomization): bool
     {
-        //
-        return $user->role === UserRole::ADMIN;
+        return $this->isAdmin($user);
     }
 
     /**
@@ -66,7 +62,11 @@ class BurgerCustomizationPolicy
      */
     public function forceDelete(User $user, BurgerCustomization $burgerCustomization): bool
     {
-        //
+        return $this->isAdmin($user);
+    }
+
+    private function isAdmin(User $user)
+    {
         return $user->role === UserRole::ADMIN;
     }
 }

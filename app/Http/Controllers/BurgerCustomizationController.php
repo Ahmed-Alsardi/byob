@@ -5,15 +5,24 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreBurgerCustomizationRequest;
 use App\Http\Requests\UpdateBurgerCustomizationRequest;
 use App\Models\BurgerCustomization;
+use App\Repository\BurgerCustomizationRepository;
 
 class BurgerCustomizationController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->authorizeResource(BurgerCustomization::class, "burgerCustomization");
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $cus = BurgerCustomizationRepository::getCustomizations();
+        return view("customization.index", [
+            "customizations" => $cus,
+        ]);
     }
 
     /**

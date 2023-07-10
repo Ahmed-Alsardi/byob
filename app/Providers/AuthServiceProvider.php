@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+use App\Models\BurgerCustomization;
 use App\Models\Complaint;
+use App\Policies\BurgerCustomizationPolicy;
 use App\Policies\ComplaintPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -15,7 +17,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        Complaint::class => ComplaintPolicy::class
+        Complaint::class => ComplaintPolicy::class,
+        BurgerCustomization::class => BurgerCustomizationPolicy::class,
     ];
 
     /**
