@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Collection;
 class BurgerCustomizationRepository
 {
 
+    const MEAT = "meat";
+    const BREAD = "bread";
+    const SIDE = "side";
+
     public static function getId(string $category, string $name): int
     {
         return BurgerCustomization::query()
@@ -39,22 +43,6 @@ class BurgerCustomizationRepository
     {
         return self::_getType("side");
     }
-
-    public static function addBread(string $bread): void
-    {
-        self::_addToCategory("bread", $bread);
-    }
-
-    public static function addMeat(string $meat): void
-    {
-        self::_addToCategory("meat", $meat);
-    }
-
-    public static function addSide(string $side): void
-    {
-        self::_addToCategory("side", $side);
-    }
-
     private static function _addToCategory(string $category, string $value): void
     {
         BurgerCustomization::query()
@@ -74,5 +62,10 @@ class BurgerCustomizationRepository
     public static function getCustomizations()
     {
         return BurgerCustomization::all();
+    }
+
+    public static function addCustomization(mixed $category, mixed $name)
+    {
+        self::_addToCategory($category, $name);
     }
 }

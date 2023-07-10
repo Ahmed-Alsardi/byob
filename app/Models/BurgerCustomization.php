@@ -9,4 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class BurgerCustomization extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        "category",
+        "name",
+    ];
 }

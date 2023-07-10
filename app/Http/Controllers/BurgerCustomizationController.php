@@ -30,7 +30,7 @@ class BurgerCustomizationController extends Controller
      */
     public function create()
     {
-        //
+        return view("customization.create");
     }
 
     /**
@@ -38,7 +38,8 @@ class BurgerCustomizationController extends Controller
      */
     public function store(StoreBurgerCustomizationRequest $request)
     {
-        //
+        BurgerCustomizationRepository::addCustomization($request->category, $request->name);
+        return redirect()->route("customization.index");
     }
 
     /**
