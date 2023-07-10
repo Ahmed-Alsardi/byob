@@ -17,9 +17,10 @@ class BurgerFactory extends Factory
      */
     public function definition(): array
     {
-        $meats = BurgerCustomizationRepository::getMeats();
-        $breads = BurgerCustomizationRepository::getBreads();
-        $sides = BurgerCustomizationRepository::getSides();
+        $cus = BurgerCustomizationRepository::getCustomizations();
+        $meats = $cus->where("category", "meat");
+        $breads = $cus->where("category", "bread");
+        $sides = $cus->where("category", "side");
         $meat = $meats->random();
         $bread = $breads->random();
         foreach (range(1, rand(1, $sides->count())) as $i) {

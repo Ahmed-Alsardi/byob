@@ -13,10 +13,6 @@ Route::middleware("auth")->group(function () {
         ->name("customization.store");
     Route::get("/customizations/{burgerCustomization}", [BurgerCustomizationController::class, "show"])
         ->name("customization.show");
-    Route::get("/customizations/{burgerCustomization}/edit", [BurgerCustomizationController::class, "edit"])
-        ->name("customization.edit");
     Route::put("/customizations/{burgerCustomization}", [BurgerCustomizationController::class, "update"])
         ->name("customization.update");
-    Route::delete("/customizations/{burgerCustomization}", [BurgerCustomizationController::class, "destroy"])
-        ->name("customization.destroy");
 });
