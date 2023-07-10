@@ -25,6 +25,9 @@ class OrderRepository
         if ($order && $removeExistingBurgers) {
             $order->burgers->map(fn($burger) => $burger->forceDelete());
         }
+        /**
+         * why we are making new order when you already have unpaid order
+         */
         return $order ?? Order::query()
             ->create([
                 "customer_id" => $user->id,
@@ -35,6 +38,10 @@ class OrderRepository
     public static function getOrdersByUser(): Collection
     {
         $user = auth()->user();
+        /**
+         * TODO
+         * null check is missing if user is null you get exception here
+         */
         if ($user->role === UserRole::CUSTOMER) {
             return Order::query()
                 ->where("customer_id", "=", $user->id)

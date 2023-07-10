@@ -83,6 +83,9 @@ class OrderService
     private static function _getChef()
     {
         $chefs = ChefRepository::getAllAvailableChef();
+        /**
+         * just check if $chefs is null throw exception
+         */
         if ($chefs->count() == 0) {
             throw new \Exception("No chefs available");
         }
@@ -90,10 +93,22 @@ class OrderService
             return $chefs->first();
         }
         // get the chef of the last order
+        /**
+         * TODO
+         * use can also use latest() method
+         */
         $lastOrder = Order::query()
             ->where("chef_id", "!=", null)
             ->orderBy("chef_assigned_at", "desc")
             ->first();
+        /**
+         * TODO
+         * you can simple use if ($lastOrder)
+         */
+        /**
+         * TODO
+         * on line no 89 you already handled this like if no chefs available so your first condition throw exception no need of this condition
+         */
         if ($lastOrder == null) {
             $chef = $chefs->first();
             if ($chef == null) {
@@ -106,6 +121,9 @@ class OrderService
             ->sortBy("id")
             ->first();
         // sort the chefs based on the unavailability time
+        /**
+         * TODO same goes here
+         */
         if ($chef == null) {
             $chef = $chefs->first();
             if ($chef == null) {
@@ -117,6 +135,11 @@ class OrderService
 
     public static function completeOrder($chef, Order $order)
     {
+        /**
+         * TODO
+         * why we are using this method for update
+         * create one update method for this pass data to to update function in which first check order exists if exists simply update and return
+         */
         return DB::transaction(function () use ($chef, $order) {
             try {
                 $chef->available = true;

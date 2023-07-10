@@ -7,6 +7,7 @@ use Database\Seeders\helper\DisableForeignKeys;
 use Database\Seeders\helper\TruncateTable;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -14,6 +15,7 @@ class UserSeeder extends Seeder
     /**
      * Run the database seeds.
      */
+    #TODO please add password for system users
     public function run(): void
     {
      $this->disableForeignKeys();

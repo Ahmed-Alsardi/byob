@@ -34,13 +34,42 @@ class BurgerController extends Controller
          * every time someone views the page, read about laravel caching
          */
 
-//        $cus = BurgerCustomizationRepository::getCustomizations();
-        $cus = Cache::rememberForever("customizations", fn() => BurgerCustomizationRepository::getCustomizations());
+
+        /**
+         * TODO:
+         * use cache instead of sessions
+         * make generic functions for update or create
+         * always add null check conditions
+         * use local scopes in model class when you are getting something from database
+         * use flash laravel package for exceptions errors this is so help full when you are working on web
+         * use parent controller for helper function or you can also make helper facades for this
+         * rest all is good very nice
+         */
+
+
+
+
+        /**
+         * TODO:
+         * cache implementation is not correct
+         * for first time it will not work use this
+         * $cus = Cache::rememberForever('customizations', function () {
+            return BurgerCustomizationRepository::getCustomizations();
+            });
+         *
+         */
+        $cus = BurgerCustomizationRepository::getCustomizations();
+//        $cus = Cache::rememberForever("customizations", fn() => BurgerCustomizationRepository::getCustomizations());
         $meats = $cus->where("category", "meat");
         $breads = $cus->where("category", "bread");
         $sides = $cus->where("category", "side");
         if (auth()->check()) {
             $order = OrderRepository::getUnpaidOrder(auth()->user())->first();
+            /**
+             * TODO:
+             * use can simply use toArray() method here
+             * like $order->burgers->toArray()
+             */
             if ($order) {
                 $burgers = $order->burgers;
                 $burgers = $burgers->map(fn($burger) => BurgerRepository::convertFromEntityToArray($burger));
@@ -75,6 +104,12 @@ class BurgerController extends Controller
             return redirect()->route("burgers.index");
         }
         if (auth()->check()) {
+            /**
+             * TODO:
+             * I think you if he want to add another order so get his requested payment order and redirect him to orders page
+             * if he want to edit so redirect to edit page
+             * or if he want to create another order so delete his entire order and then make his new order
+             */
             $user = $request->user();
             $order = OrderRepository::getUnpaidOrCreate($user, true);
             BurgerRepository::createBurger($request->all()["burgers"], $order->id);

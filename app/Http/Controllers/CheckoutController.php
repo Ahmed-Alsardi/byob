@@ -87,6 +87,10 @@ class CheckoutController extends Controller
     }
 
     public function cancel(Request $request, Order $order) {
+      /**
+       * TODO
+       * also mark order status to cancel
+       */
         if ($order->customer_id !== $request->user()->id) {
             abort(403);
         }

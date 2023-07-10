@@ -31,6 +31,10 @@ class LocationController extends Controller
         }
         $user = auth()->user();
         $location = LocationRepository::getUserLocation($user);
+        /**
+         * TODO
+         * pass empty array to view if locations not found you already handled this on view
+         */
         if (!$location) {
             return view("location");
         }
@@ -44,6 +48,10 @@ class LocationController extends Controller
      */
     public function store(StoreLocationRequest $request)
     {
+        /**
+         * TODO
+         * no need for this condition your form request will handle this thing
+         */
         if (!isset($request->all()["city"]) || !isset($request->all()["street"]) || !isset($request->all()["house_number"])) {
             return redirect()->route("location.index");
         }

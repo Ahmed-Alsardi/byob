@@ -87,6 +87,10 @@ class OrderController extends Controller
        if (OrderService::completeOrder(auth()->user(), $order)){
            EmailNotificationService::sendOrderCompletedEmail($order);
        } else {
+           /**
+            * TODO
+            * return 422 error not eception this is not exception
+            */
            abort(500);
        }
        return redirect()->route("order.index");
