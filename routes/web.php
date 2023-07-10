@@ -2,10 +2,7 @@
 
 use App\Http\Controllers\BurgerController;
 use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\ChefController;
-use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\LocationController;
-use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,31 +29,6 @@ Route::post("/location", [LocationController::class, "store"])->name("location.s
 Route::get("/checkout", [CheckoutController::class, "create"])->name("checkout.create");
 Route::post("/checkout", [CheckoutController::class, "store"])->name("checkout.store");
 
-Route::middleware("auth")->group(function () {
-    Route::get("/orders", [OrderController::class, "index"])->name("order.index");
-    Route::get("/orders/{order}", [OrderController::class, "show"])->name("order.show");
-    Route::post("/orders/{order}/complete", [OrderController::class, "complete"])->name("order.complete");
-    Route::get("/orders/{order}/complaint", [OrderController::class, "complaint"])->name("order.complaint");
-    Route::post("/orders/{order}/complaint", [OrderController::class, "storeComplaint"])->name("order.storeComplaint");
-});
-
-Route::middleware("auth")->group(function() {
-   Route::get("/complaints", [ComplaintController::class, "index"])->name("complaint.index");
-   Route::get("/complaints/{complaint}", [ComplaintController::class, "show"])->name("complaint.show");
-   Route::put("/complaints/{complaint}", [ComplaintController::class, "update"])->name("complaint.update");
-});
-
-Route::middleware("auth")->group(function() {
-   Route::get("/chefs", [ChefController::class, "index"])->name("chef.index");
-   Route::get("/chefs/create", [ChefController::class, "create"])->name("chef.create");
-   Route::post("/chefs/create", [ChefController::class, "store"])->name("chef.store");
-   Route::get("/chefs/{chef}", [ChefController::class, "show"])->name("chef.show");
-   Route::delete("/chefs/{chef}", [ChefController::class, "destroy"])->name("chef.delete");
-   Route::get("/chefs/{chef}/edit", [ChefController::class, "edit"])->name("chef.edit");
-   Route::put("/chefs/{chef}/edit", [ChefController::class, "update"])->name("chef.update");
-   Route::put("/chefs/{chef}/available", [ChefController::class, "changeAvailability"])->name("chef.available");
-});
-
 Route::get("/checkout/success/{order}", [CheckoutController::class, "success"])->name("checkout.success");
 Route::get("/checkout/cancel/{order}", [CheckoutController::class, "cancel"])->name("checkout.cancel");
 
@@ -71,3 +43,6 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+require __DIR__.'/order.php';
+require __DIR__.'/chef.php';
+require __DIR__.'/complaint.php';
