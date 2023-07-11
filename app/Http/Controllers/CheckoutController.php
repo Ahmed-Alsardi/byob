@@ -30,7 +30,7 @@ class CheckoutController extends Controller
                 return redirect()->route("location.create");
             }
             $burgers = $order->burgers;
-            $burgers = $burgers->map(fn($burger) => BurgerRepository::convertFromEntityToArray($burger));
+            $burgers = $burgers->map(fn($burger) => BurgerRepository::convertToReadableOrder($burger));
         } else {
             if (!session()->exists("burgers")) {
                 return redirect()->route("burgers.index");
@@ -90,6 +90,9 @@ class CheckoutController extends Controller
       /**
        * TODO
        * also mark order status to cancel
+       * ================================
+       * User can retry payment, The order will not process until we receive the payment
+       * So there no need to mark the status as cancel
        */
         if ($order->customer_id !== $request->user()->id) {
             abort(403);

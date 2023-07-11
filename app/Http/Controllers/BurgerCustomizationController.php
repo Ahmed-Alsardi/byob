@@ -6,6 +6,7 @@ use App\Http\Requests\StoreBurgerCustomizationRequest;
 use App\Http\Requests\UpdateBurgerCustomizationRequest;
 use App\Models\BurgerCustomization;
 use App\Repository\BurgerCustomizationRepository;
+use Illuminate\Support\Facades\Cache;
 
 class BurgerCustomizationController extends Controller
 {
@@ -39,6 +40,7 @@ class BurgerCustomizationController extends Controller
     public function store(StoreBurgerCustomizationRequest $request)
     {
         BurgerCustomizationRepository::addCustomization($request->category, $request->name);
+        Cache::delete(BurgerCustomizationRepository::CACHE_NAME);
         return redirect()->route("customization.index");
     }
 

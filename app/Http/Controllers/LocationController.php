@@ -51,10 +51,9 @@ class LocationController extends Controller
         /**
          * TODO
          * no need for this condition your form request will handle this thing
+         * =====================================
+         * Done
          */
-        if (!isset($request->all()["city"]) || !isset($request->all()["street"]) || !isset($request->all()["house_number"])) {
-            return redirect()->route("location.index");
-        }
         $location = [
             "city" => $request->all()["city"],
             "street" => $request->all()["street"],

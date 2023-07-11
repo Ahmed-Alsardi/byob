@@ -32,6 +32,8 @@ class BurgerController extends Controller
          * And to optimize this even further since we know that the sides and customization
          * will not be changed much, we should introduce a caching layer to prevent db calls
          * every time someone views the page, read about laravel caching
+         * ==============================
+         * DONE
          */
 
 
@@ -44,22 +46,25 @@ class BurgerController extends Controller
          * use flash laravel package for exceptions errors this is so help full when you are working on web
          * use parent controller for helper function or you can also make helper facades for this
          * rest all is good very nice
+         * ==============================
+         * 1. I don't think using cache will work here since the user can customize the burger without logging in
+         * so I need to use session to store the data until the user logs in
+         * 2. DONE (BaseRepository)
          */
-
-
-
 
         /**
          * TODO:
          * cache implementation is not correct
          * for first time it will not work use this
          * $cus = Cache::rememberForever('customizations', function () {
-            return BurgerCustomizationRepository::getCustomizations();
-            });
-         *
+         * return BurgerCustomizationRepository::getCustomizations();
+         * });
+         * ==============================
+         * Done
          */
-        $cus = BurgerCustomizationRepository::getCustomizations();
-//        $cus = Cache::rememberForever("customizations", fn() => BurgerCustomizationRepository::getCustomizations());
+        $cus = Cache::rememberForever(BurgerCustomizationRepository::CACHE_NAME, function () {
+            return BurgerCustomizationRepository::getCustomizations();
+        });
         $meats = $cus->where("category", "meat");
         $breads = $cus->where("category", "bread");
         $sides = $cus->where("category", "side");
@@ -69,10 +74,17 @@ class BurgerController extends Controller
              * TODO:
              * use can simply use toArray() method here
              * like $order->burgers->toArray()
+             * ==============================
+             * convertFromEntityToArray it's to convert burger fields from id to name
+             * for example this the fields in burger table
+             * id: int, meat_id: int, bread_id: int, sides: json(contain ids of sides)
+             * This function take the row and return:
+             * meat: name (e.g chicken), bread: name (e.g white), sides: array of names (e.g [fries, coke])
+             * The name of the function is actually misleading, it should be convertToReadableOrder or something like that
              */
             if ($order) {
                 $burgers = $order->burgers;
-                $burgers = $burgers->map(fn($burger) => BurgerRepository::convertFromEntityToArray($burger));
+                $burgers = $burgers->map(fn($burger) => BurgerRepository::convertToReadableOrder($burger));
             }
         } else {
             if (session()->exists("burgers")) {
@@ -85,14 +97,6 @@ class BurgerController extends Controller
             "sides" => $sides,
             "burgers" => $burgers ?? [],
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -109,6 +113,11 @@ class BurgerController extends Controller
              * I think you if he want to add another order so get his requested payment order and redirect him to orders page
              * if he want to edit so redirect to edit page
              * or if he want to create another order so delete his entire order and then make his new order
+             * ==============================
+             * The order of operation here is:
+             * 1. User goes to /burger page, which this create and display last unpaid order
+             * 2. User can add new, update, or delete burger in the page
+             * 3. After he is done, and we delete all burger with the old order if it exists, and create a new one
              */
             $user = $request->user();
             $order = OrderRepository::getUnpaidOrCreate($user, true);
@@ -123,37 +132,5 @@ class BurgerController extends Controller
             }
         }
         return redirect()->route("location.create");
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Burger $burger)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Burger $burger)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateBurgerRequest $request, Burger $burger)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Burger $burger)
-    {
-        //
     }
 }

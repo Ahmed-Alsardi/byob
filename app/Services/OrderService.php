@@ -85,7 +85,11 @@ class OrderService
         $chefs = ChefRepository::getAllAvailableChef();
         /**
          * just check if $chefs is null throw exception
+         * Done
          */
+        if (!$chefs) {
+            throw new \Exception("No chefs available");
+        }
         if ($chefs->count() == 0) {
             throw new \Exception("No chefs available");
         }
@@ -96,10 +100,11 @@ class OrderService
         /**
          * TODO
          * use can also use latest() method
+         * Done
          */
         $lastOrder = Order::query()
             ->where("chef_id", "!=", null)
-            ->orderBy("chef_assigned_at", "desc")
+            ->latest("chef_assigned_at")
             ->first();
         /**
          * TODO
@@ -108,14 +113,21 @@ class OrderService
         /**
          * TODO
          * on line no 89 you already handled this like if no chefs available so your first condition throw exception no need of this condition
+         * ===============================
+         * The orders should be assign to chefs in round robin fashion, I need to get the last chef who was assigned
+         * to the last order to get the next chef who should be assigned to this order.
+         * If the last order was null, it means that this is the first order for the whole application, so assign it to the first chef.
+         * otherwise, get the next chef whose id is greater than the last chef id, if not found, that mean we need
+         * circle back to the first chef.
          */
-        if ($lastOrder == null) {
+        if (!$lastOrder) {
             $chef = $chefs->first();
             if ($chef == null) {
                 throw new \Exception("No chefs available");
             }
             return $chef;
         }
+
         $chef = $chefs
             ->where("id", ">", $lastOrder->chef_id)
             ->sortBy("id")
@@ -123,8 +135,9 @@ class OrderService
         // sort the chefs based on the unavailability time
         /**
          * TODO same goes here
+         * Done
          */
-        if ($chef == null) {
+        if (!$chef) {
             $chef = $chefs->first();
             if ($chef == null) {
                 throw new \Exception("No chefs available");
@@ -139,6 +152,8 @@ class OrderService
          * TODO
          * why we are using this method for update
          * create one update method for this pass data to to update function in which first check order exists if exists simply update and return
+         * ================================
+         * This method will not be called unless the order and the chef are both available
          */
         return DB::transaction(function () use ($chef, $order) {
             try {

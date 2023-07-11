@@ -12,6 +12,8 @@ class BurgerCustomizationRepository
     const BREAD = "bread";
     const SIDE = "side";
 
+    const CACHE_NAME = "customizations";
+
     public static function getId(string $category, string $name): int
     {
         return BurgerCustomization::query()

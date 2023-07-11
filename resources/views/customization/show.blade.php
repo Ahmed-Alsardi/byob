@@ -9,10 +9,10 @@
             </li>
         </ul>
 
-        <div class="flex justify-center items-center">
-            <a href="{{route('customization.edit', $customization)}}"
-               class="mt-8 bg-green-500 hover:bg-green-700 mr-4 text-white font-bold py-2 px-4 rounded">Edit
-                Customization</a>
+{{--        <div class="flex justify-center items-center">--}}
+{{--            <a href="{{route('customization.edit', $customization)}}"--}}
+{{--               class="mt-8 bg-green-500 hover:bg-green-700 mr-4 text-white font-bold py-2 px-4 rounded">Edit--}}
+{{--                Customization</a>--}}
 {{--            <form action="{{route('customization.destroy', $customization)}}" method="POST">--}}
 {{--                @csrf--}}
 {{--                @method('DELETE')--}}
@@ -21,6 +21,6 @@
 {{--                    Customization--}}
 {{--                </button>--}}
 {{--            </form>--}}
-        </div>
+{{--        </div>--}}
     </div>
 </x-auth-app-layout>

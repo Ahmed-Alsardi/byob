@@ -19,7 +19,7 @@ class BurgerRepository
         }
     }
 
-    public static function convertFromEntityToArray(Burger $burger): array
+    public static function convertToReadableOrder(Burger $burger): array
     {
         $meat = BurgerCustomizationRepository::getName("meat", $burger->meat_id);
         $bread = BurgerCustomizationRepository::getName("bread", $burger->bread_id);

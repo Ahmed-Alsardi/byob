@@ -14,4 +14,19 @@ class BurgerCustomization extends Model
         "category",
         "name",
     ];
+
+    public function scopeBread($query)
+    {
+        return $query->where("category", "bread");
+    }
+
+    public function scopeMeat($query)
+    {
+        return $query->where("category", "meat");
+    }
+
+    public function scopeSide($query)
+    {
+        return $query->where("category", "side");
+    }
 }
