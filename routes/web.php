@@ -53,27 +53,27 @@ Route::middleware('auth')->group(function () {
         Route::post("/{order}/complaint", [OrderController::class, "storeComplaint"])->name("order.storeComplaint");
     });
 
-    // Chef Routes
-    Route::prefix("/chefs")->middleware("admin")->group(function () {
-        Route::get("/chefs", [ChefController::class, "index"])->name("chef.index");
-        Route::get("/chefs/create", [ChefController::class, "create"])->name("chef.create");
-        Route::post("/chefs/create", [ChefController::class, "store"])->name("chef.store");
-        Route::get("/chefs/{chef}", [ChefController::class, "show"])->name("chef.show");
-        Route::delete("/chefs/{chef}", [ChefController::class, "destroy"])->name("chef.delete");
-        Route::get("/chefs/{chef}/edit", [ChefController::class, "edit"])->name("chef.edit");
-        Route::put("/chefs/{chef}/edit", [ChefController::class, "update"])->name("chef.update");
-        Route::put("/chefs/{chef}/available", [ChefController::class, "changeAvailability"])->name("chef.available");
+    // Chef Administrator Routes
+    Route::prefix("/chefs")->group(function () {
+        Route::get("/", [ChefController::class, "index"])->name("chef.index");
+        Route::get("/create", [ChefController::class, "create"])->name("chef.create");
+        Route::post("/create", [ChefController::class, "store"])->name("chef.store");
+        Route::get("/{chef}", [ChefController::class, "show"])->name("chef.show");
+        Route::delete("/{chef}", [ChefController::class, "destroy"])->name("chef.delete");
+        Route::get("/{chef}/edit", [ChefController::class, "edit"])->name("chef.edit");
+        Route::put("/{chef}/edit", [ChefController::class, "update"])->name("chef.update");
     });
 
+
     // Complaint Routes
-    Route::prefix("/complaints")->group(function() {
-        Route::get("/complaints", [ComplaintController::class, "index"])->name("complaint.index");
-        Route::get("/complaints/{complaint}", [ComplaintController::class, "show"])->name("complaint.show");
-        Route::put("/complaints/{complaint}", [ComplaintController::class, "update"])->name("complaint.update");
+    Route::prefix("/complaints")->group(function () {
+        Route::get("/", [ComplaintController::class, "index"])->name("complaint.index");
+        Route::get("/{complaint}", [ComplaintController::class, "show"])->name("complaint.show");
+        Route::put("/{complaint}", [ComplaintController::class, "update"])->name("complaint.update");
     });
 
     // Customization Routes
-    Route::prefix('/customizations')->middleware("admin")->group(function () {
+    Route::prefix('/customizations')->middleware("auth.admin")->group(function () {
         Route::get("/", [BurgerCustomizationController::class, "index"])
             ->name("customization.index");
         Route::get("/create", [BurgerCustomizationController::class, "create"])
@@ -85,10 +85,6 @@ Route::middleware('auth')->group(function () {
         Route::put("/{burgerCustomization}", [BurgerCustomizationController::class, "update"])
             ->name("customization.update");
     });
-});
-
-
-Route::middleware("auth")->group(function () {
 });
 
 require __DIR__.'/auth.php';
