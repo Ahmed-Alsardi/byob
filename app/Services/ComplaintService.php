@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helper\OrderStatus;
 use App\Models\Complaint;
+use App\Repository\OrderRepository;
 use Illuminate\Support\Facades\DB;
 
 class ComplaintService
@@ -22,15 +23,15 @@ class ComplaintService
             if ($refund) {
                 $result = $complaint->order->refund();
                 if ($result['status'] == 'succeeded') {
-                    $complaint->order->status = OrderStatus::REFUNDED;
+                    $complaint->order->status = OrderRepository::REFUNDED;
                     $complaint->order->save();
                 } else {
-                    $complaint->order->status = OrderStatus::REFUND_FAILED;
+                    $complaint->order->status = OrderRepository::REFUND_FAILED;
                     $complaint->order->save();
                     throw new \Exception("Refund failed");
                 }
             } else {
-                $complaint->order->status = OrderStatus::REFUND_REJECTED;
+                $complaint->order->status = OrderRepository::REFUND_REJECTED;
                 $complaint->order->save();
             }
         });

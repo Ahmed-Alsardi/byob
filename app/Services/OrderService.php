@@ -7,6 +7,7 @@ use App\Models\Chef;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Repository\ComplaintRepository;
+use App\Repository\OrderRepository;
 use Illuminate\Support\Facades\DB;
 
 class OrderService
@@ -24,7 +25,7 @@ class OrderService
                 return false;
             }
             $chef->available = false;
-            $order->status = OrderStatus::IN_PROGRESS;
+            $order->status = OrderRepository::IN_PROGRESS;
             $order->chef_id = $chef->id;
             $order->chef_assigned_at = now();
             $customerLocation = Customer::query()->where("id", "=", $order->customer_id)->first()->location;
@@ -42,7 +43,7 @@ class OrderService
         return DB::transaction(function () use ($order) {
             $chef = $order->chef;
             $chef->available = true;
-            $order->status = OrderStatus::REQUIRED_PAYMENT;
+            $order->status = OrderRepository::REQUIRED_PAYMENT;
             $order->chef_assigned_at = null;
             $order->chef_id = null;
             $order->city = null;
@@ -120,7 +121,7 @@ class OrderService
         return DB::transaction(function () use ($chef, $order) {
             try {
                 $chef->available = true;
-                $order->status = OrderStatus::COMPLETED;
+                $order->status = OrderRepository::COMPLETED;
                 $order->completed_at = now();
                 $order->save();
                 $chef->save();
@@ -134,7 +135,7 @@ class OrderService
     public static function complaintOrder(Order $order, string $message)
     {
         return DB::transaction(function () use ($order, $message) {
-            $order->status = OrderStatus::COMPLAINT;
+            $order->status = OrderRepository::COMPLAINT;
             $order->save();
             return ComplaintRepository::createComplaint($order, $message);
         });

@@ -47,13 +47,4 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
-    }
-
-    public function isAvailable(): bool {
-        return $this->role === UserRole::CHEF && $this->available && $this->unavailable_until < now();
-    }
 }

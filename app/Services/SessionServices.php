@@ -34,7 +34,7 @@ class SessionServices
     {
         $order = Order::query()->create([
             "customer_id" => $user->id,
-            "status" => OrderStatus::REQUIRED_PAYMENT,
+            "status" => OrderRepository::REQUIRED_PAYMENT,
         ]);
         $burgers = session()->get("burgers");
         BurgerRepository::createBurger($burgers, $order->id);

@@ -1,6 +1,7 @@
 <?php
 
 use App\Helper\OrderStatus;
+use App\Repository\OrderRepository;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +20,7 @@ return new class extends Migration
             $table->foreignId("chef_id")->nullable();
             $table->foreign("chef_id")->references("id")->on("users");
             $table->timestamp("chef_assigned_at")->nullable();
-            $table->string("status")->default(OrderStatus::REQUIRED_PAYMENT);
+            $table->string("status")->default(OrderRepository::REQUIRED_PAYMENT);
             $table->timestamp("completed_at")->nullable();
             $table->float("total_price")->nullable();
             $table->string("payment_intent_id")->nullable();

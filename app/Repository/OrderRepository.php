@@ -11,11 +11,19 @@ use Illuminate\Support\Facades\Auth;
 class OrderRepository
 {
 
+    const REQUIRED_PAYMENT = "required_payment";
+    const COMPLAINT = "complaint";
+    const IN_PROGRESS = "in_progress";
+    const COMPLETED = "completed";
+    const REFUNDED = "refunded";
+    const REFUND_REJECTED = "refund_rejected";
+    const REFUND_FAILED = "refund_failed";
+
     public static function getUnpaidOrder($user): array|Collection
     {
         return Order::query()
             ->where("customer_id", "=", $user->id)
-            ->where("status", "=", OrderStatus::REQUIRED_PAYMENT)
+            ->where("status", "=", OrderRepository::REQUIRED_PAYMENT)
             ->get();
     }
 
@@ -28,7 +36,7 @@ class OrderRepository
         return $order ?? Order::query()
             ->create([
                 "customer_id" => $user->id,
-                "status" => OrderStatus::REQUIRED_PAYMENT,
+                "status" => OrderRepository::REQUIRED_PAYMENT,
             ]);
     }
 
