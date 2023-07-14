@@ -7,15 +7,17 @@ use App\Models\Burger;
 class BurgerRepository
 {
 
-    public static function createBurger(array $burgers, int $order_id = null): void
+    const BURGER_SESSION_NAME = "burgers";
+
+    public static function createBurgers(array $burgers, int $order_id = null): void
     {
         if ($order_id){
             self::_insertBurger($burgers, $order_id);
         } else {
-            if (session()->exists("burgers")) {
-                session()->remove("burgers");
+            if (session()->exists(self::BURGER_SESSION_NAME)) {
+                session()->remove(self::BURGER_SESSION_NAME);
             }
-            session(["burgers" => $burgers]);
+            session([self::BURGER_SESSION_NAME => $burgers]);
         }
     }
 

@@ -17,7 +17,7 @@ class BurgerFactory extends Factory
      */
     public function definition(): array
     {
-        $cus = BurgerCustomizationRepository::getCustomizations();
+        $cus = BurgerCustomizationRepository::getAllCustomization();
         $meats = $cus->where("category", "meat");
         $breads = $cus->where("category", "bread");
         $sides = $cus->where("category", "side");

@@ -19,7 +19,7 @@ class BurgerCustomizationController extends Controller
      */
     public function index()
     {
-        $cus = BurgerCustomizationRepository::getCustomizations();
+        $cus = BurgerCustomizationRepository::getAllCustomization();
         return view("customization.index", [
             "customizations" => $cus,
         ]);

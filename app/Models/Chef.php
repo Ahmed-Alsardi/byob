@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helper\UserRole;
+use App\Repository\UserRepository;
 
 class Chef extends User
 {
@@ -12,14 +13,14 @@ class Chef extends User
         parent::boot();
         static::creating(function ($chef) {
             $chef->forceFill([
-                "role" => UserRole::CHEF,
+                "role" => UserRepository::CHEF,
             ]);
         });
     }
 
     public static function booted() {
         static::addGlobalScope('chef', function ($q) {
-            $q->where("role", "=", UserRole::CHEF);
+            $q->where("role", "=", UserRepository::CHEF);
         });
 
     }

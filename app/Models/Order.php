@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Repository\BurgerCustomizationRepository;
 use App\Repository\BurgerRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -55,5 +56,26 @@ class Order extends Model
 
     public function refund() {
         return $this->customer->refund($this->payment_intent_id);
+    }
+
+    public static function getCustomerOrderWithStatus($userId, $orderStatus): Collection|array
+    {
+        return Order::query()
+            ->where("customer_id", "=", $userId)
+            ->where("status", $orderStatus)
+            ->get();
+    }
+
+    public function deleteBurger()
+    {
+        return $this->burgers()->delete();
+    }
+
+    public static function createOrderWithStatus($userId, $orderStatus)
+    {
+        return Order::create([
+            "customer_id" => $userId,
+            "status" => $orderStatus,
+        ]);
     }
 }

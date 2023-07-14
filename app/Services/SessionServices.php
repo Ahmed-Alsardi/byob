@@ -26,7 +26,7 @@ class SessionServices
 
     private static function _existUnpaidOrder(User $user)
     {
-        $orders = OrderRepository::getUnpaidOrder($user)->first();
+        $orders = OrderRepository::getCustomerUnpaidOrder($user)->first();
         return (bool)$orders;
     }
 
@@ -37,13 +37,13 @@ class SessionServices
             "status" => OrderRepository::REQUIRED_PAYMENT,
         ]);
         $burgers = session()->get("burgers");
-        BurgerRepository::createBurger($burgers, $order->id);
+        BurgerRepository::createBurgers($burgers, $order->id);
     }
 
     private static function _addBurgersToUnpaidOrder(User $user, Order $order)
     {
         $burgers = session()->get("burgers");
-        BurgerRepository::createBurger($burgers, $order->id);
+        BurgerRepository::createBurgers($burgers, $order->id);
     }
 
     private static function _addLocationToUser(User $user)

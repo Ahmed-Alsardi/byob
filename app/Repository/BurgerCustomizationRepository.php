@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Models\BurgerCustomization;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class BurgerCustomizationRepository
 {
@@ -11,6 +12,8 @@ class BurgerCustomizationRepository
     const MEAT = "meat";
     const BREAD = "bread";
     const SIDE = "side";
+
+    const CUSTOMIZATION_CACHE_NAME = "customizations";
 
     public static function getId(string $category, string $name): int
     {
@@ -31,17 +34,17 @@ class BurgerCustomizationRepository
     }
     public static function getBreads(): Collection|array
     {
-        return self::_getType("bread");
+        return self::_getType(self::BREAD);
     }
 
     public static function getMeats(): Collection|array
     {
-        return self::_getType("meat");
+        return self::_getType(self::MEAT);
     }
 
     public static function getSides(): Collection|array
     {
-        return self::_getType("side");
+        return self::_getType(self::SIDE);
     }
     private static function _addToCategory(string $category, string $value): void
     {
@@ -59,9 +62,9 @@ class BurgerCustomizationRepository
             ->get();
     }
 
-    public static function getCustomizations()
+    public static function getAllCustomization()
     {
-        return BurgerCustomization::all();
+        return Cache::rememberForever(self::CUSTOMIZATION_CACHE_NAME, fn() => BurgerCustomization::getAll());
     }
 
     public static function addCustomization(mixed $category, mixed $name)

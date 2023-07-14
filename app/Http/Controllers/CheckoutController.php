@@ -20,7 +20,7 @@ class CheckoutController extends Controller
             if ($request->user()->role !== UserRole::CUSTOMER) {
                 abort(403, "Only customers can checkout");
             }
-            $order = OrderRepository::getUnpaidOrder(auth()->user())->first();
+            $order = OrderRepository::getCustomerUnpaidOrder(auth()->user())->first();
             if (!$order) {
                 return redirect()->route("burgers.index");
             }
@@ -57,7 +57,7 @@ class CheckoutController extends Controller
         if (!auth()->check()) {
             return redirect()->route("login");
         }
-        $order = OrderRepository::getUnpaidOrder(auth()->user())->first();
+        $order = OrderRepository::getCustomerUnpaidOrder(auth()->user())->first();
         $totalPrice = OrderService::calculateAndSavePrice($order);
         if ($totalPrice <= 0) {
             return redirect()->route("burgers.index");

@@ -4,7 +4,9 @@ namespace App\Repository;
 
 use App\Helper\OrderStatus;
 use App\Helper\UserRole;
+use App\Models\Customer;
 use App\Models\Order;
+use App\Repository\CustomerRepository\CustomerRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,17 +21,14 @@ class OrderRepository
     const REFUND_REJECTED = "refund_rejected";
     const REFUND_FAILED = "refund_failed";
 
-    public static function getUnpaidOrder($user): array|Collection
+    public static function getCustomerUnpaidOrder($userId): array|Collection
     {
-        return Order::query()
-            ->where("customer_id", "=", $user->id)
-            ->where("status", "=", OrderRepository::REQUIRED_PAYMENT)
-            ->get();
+        return Order::getCustomerOrderWithStatus($userId, self::REQUIRED_PAYMENT);
     }
 
-    public static function getUnpaidOrCreate($user, $removeExistingBurgers=false)
+    public static function getUnpaidOrCreate($user, $removeExistingBurgers = false)
     {
-        $order = self::getUnpaidOrder($user)->first();
+        $order = Order::getCustomerOrderWithStatus($user)->first();
         if ($order && $removeExistingBurgers) {
             $order->burgers->map(fn($burger) => $burger->forceDelete());
         }
@@ -55,6 +54,36 @@ class OrderRepository
                 ->where("chef_id", "=", $user->id)
                 ->with("burgers")
                 ->get();
+        }
+    }
+
+    public static function getCustomerBurgers($userId = null)
+    {
+        if ($userId) {
+            $order = Order::getCustomerOrderWithStatus($userId, self::REQUIRED_PAYMENT);
+            if ($order && $order->burgers) {
+                return BurgerRepository::convertFromEntityToArray($order->burgers);
+            }
+        } else {
+            if (session()->exists(BurgerRepository::BURGER_SESSION_NAME)){
+                return session()->get(BurgerRepository::BURGER_SESSION_NAME);
+            }
+        }
+        return null;
+    }
+
+    public static function saveCustomerBurgers(mixed $burgers, $userId = null)
+    {
+        if ($userId) {
+            $order = Order::getCustomerOrderWithStatus($userId, self::REQUIRED_PAYMENT);
+            if ($order){
+                $order->deleteBurgers();
+            } else {
+                $order = Order::createOrderWithStatus($userId, self::REQUIRED_PAYMENT);
+            }
+            BurgerRepository::createBurgers($burgers, $order->id);
+        } else {
+            BurgerRepository::createBurgers($burgers);
         }
     }
 
