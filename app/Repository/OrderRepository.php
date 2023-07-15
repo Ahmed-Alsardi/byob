@@ -123,4 +123,20 @@ class OrderRepository
        $order->savePaymentIntentId($payment_intent);
     }
 
+    public static function resolveComplaintOrder(mixed $refund, mixed $order_id)
+    {
+        $order = Order::getOrderById($order_id);
+        if ($refund) {
+            $result = $order->refund();
+            if ($result['status'] == 'succeeded') {
+                $order->updateStatus(self::REFUNDED);
+            } else {
+                $order->updateStatus(self::REFUND_FAILED);
+                throw new \Exception("Refund failed");
+            }
+        } else {
+            $order->updateStatus(self::REFUND_REJECTED);
+        }
+    }
+
 }

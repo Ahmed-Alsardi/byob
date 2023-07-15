@@ -33,4 +33,14 @@ class Customer extends User
         return $this->hasOne(Location::class, "user_id", "id");
     }
 
+    public static function getComplaintsByUserID($userId) {
+        $customer = self::with(['orders.complaint'])->find($userId);
+        return $customer->orders
+            ->filter(function ($order) {
+                return $order->complaint;
+            })
+            ->map(function($order) {
+                return $order->complaint;
+            });
+    }
 }

@@ -25,4 +25,8 @@ class Admin extends User
             $q->where("role", "=", UserRepository::ADMIN);
         });
     }
+
+    public static function getComplaintsByUserID($userId) {
+        return Complaint::all();
+    }
 }

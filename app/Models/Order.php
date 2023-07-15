@@ -18,6 +18,13 @@ class Order extends Model
         "status",
     ];
 
+    public static function getOrderById($order_id)
+    {
+        return self::query()
+            ->find($order_id)
+            ->get();
+    }
+
     public function burgers()
     {
         return $this->hasMany(Burger::class);
@@ -83,5 +90,11 @@ class Order extends Model
     {
         $this->payment_intent_id = $payment_intent;
         $this->save();
+    }
+
+    public function updateStatus($status) {
+        $this->status = $status;
+        $this->save();
+        return $this;
     }
 }

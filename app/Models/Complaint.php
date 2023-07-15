@@ -23,4 +23,12 @@ class Complaint extends Model
     {
         return $this->refund !== null;
     }
+
+    public function resolve($refund, $admin_message, $adminId){
+        $this->refund = $refund;
+        $this->admin_message = $admin_message;
+        $this->admin_id = $adminId;
+        $this->save();
+        return $this;
+    }
 }
