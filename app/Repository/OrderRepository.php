@@ -21,6 +21,8 @@ class OrderRepository
     const REFUND_REJECTED = "refund_rejected";
     const REFUND_FAILED = "refund_failed";
 
+    const BURGER_PRICE = 1000;
+
     public static function getCustomerUnpaidOrder($userId): array|Collection
     {
         return Order::getCustomerOrderWithStatus($userId, self::REQUIRED_PAYMENT);
@@ -61,9 +63,7 @@ class OrderRepository
     {
         if ($userId) {
             $order = Order::getCustomerOrderWithStatus($userId, self::REQUIRED_PAYMENT);
-            if ($order && $order->burgers) {
-                return BurgerRepository::convertFromEntityToArray($order->burgers);
-            }
+            return self::_getBurgersFromOrders($order);
         } else {
             if (session()->exists(BurgerRepository::BURGER_SESSION_NAME)){
                 return session()->get(BurgerRepository::BURGER_SESSION_NAME);
@@ -85,6 +85,42 @@ class OrderRepository
         } else {
             BurgerRepository::createBurgers($burgers);
         }
+    }
+
+    public static function calculatePrice(array $burgers)
+    {
+        if (!$burgers) {
+            return 0;
+        }
+        return count($burgers) * self::BURGER_PRICE;
+    }
+
+    private static function _getBurgersFromOrders($order) {
+        if ($order && $order->burgers) {
+            return BurgerRepository::convertFromEntityToArray($order->burgers);
+        }
+        return null;
+    }
+
+    public static function getCustomerUnpaidOrderForCheckout($userId)
+    {
+        $order = self::getCustomerUnpaidOrder($userId);
+        if (!$order) {
+            return null;
+        }
+        $burgersCount = count(self::_getBurgersFromOrders($order));
+        if (!$burgersCount) {
+            return null;
+        }
+        return [
+            "orderId" => $order->id,
+            "burgersCount" => $burgersCount,
+        ];
+    }
+
+    public static function savePaymentIntentId(Order $order, $payment_intent)
+    {
+       $order->savePaymentIntentId($payment_intent);
     }
 
 }

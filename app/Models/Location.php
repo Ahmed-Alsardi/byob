@@ -16,6 +16,14 @@ class Location extends Model
         "user_id",
     ];
 
+    public static function getLocationByCustomerId($userId)
+    {
+        return Location::query()
+            ->where("user_id", $userId)
+            ->first()
+            ->get();
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

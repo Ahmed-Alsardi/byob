@@ -2,95 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Helper\UserRole;
+use App\Features\Checkout\CheckoutCancelHandler;
+use App\Features\Checkout\CheckoutCreateHandler;
+use App\Features\Checkout\CheckoutStoreHandler;
+use App\Features\Checkout\CheckoutSuccessHandler;
 use App\Models\Order;
-use App\Repository\BurgerRepository;
-use App\Repository\LocationRepository;
-use App\Repository\OrderRepository;
-use App\Services\EmailNotificationService;
-use App\Services\OrderService;
 use Illuminate\Http\Request;
 
 class CheckoutController extends Controller
 {
     //
-    public function create(Request $request)
+    public function create(Request $request, CheckoutCreateHandler $handler)
     {
-        if (auth()->check()) {
-            if ($request->user()->role !== UserRole::CUSTOMER) {
-                abort(403, "Only customers can checkout");
-            }
-            $order = OrderRepository::getCustomerUnpaidOrder(auth()->user())->first();
-            if (!$order) {
-                return redirect()->route("burgers.index");
-            }
-//            OrderService::assignOrderToChef($order);
-            $location = LocationRepository::getUserLocation(auth()->user());
-            if (!$location) {
-                return redirect()->route("location.create");
-            }
-            $burgers = $order->burgers;
-            $burgers = $burgers->map(fn($burger) => BurgerRepository::convertFromEntityToArray($burger));
-        } else {
-            if (!session()->exists("burgers")) {
-                return redirect()->route("burgers.index");
-            }
-            if (!session()->exists("location")) {
-                return redirect()->route("location.create");
-            }
-            $burgers = session()->get("burgers");
-            $location = session()->get("location");
-        }
-        $totalPrice = OrderService::calculatePrice(null, $burgers);
-        if ($totalPrice <= 0) {
-            return redirect()->route("burgers.index");
-        }
-        return view("checkout", [
-            "burgers" => $burgers,
-            "location" => $location,
-            "totalPrice" => $totalPrice,
-        ]);
+        return $handler->handle($request);
     }
 
-    public function store()
+    public function store(Request $request, CheckoutStoreHandler $handler)
     {
-        if (!auth()->check()) {
-            return redirect()->route("login");
-        }
-        $order = OrderRepository::getCustomerUnpaidOrder(auth()->user())->first();
-        $totalPrice = OrderService::calculateAndSavePrice($order);
-        if ($totalPrice <= 0) {
-            return redirect()->route("burgers.index");
-        }
-        $burgerCounts = (int) ($totalPrice / OrderService::BURGER_PRICE);
-        if (OrderService::assignOrderToChef($order)) {
-            return auth()
-                ->user()
-                ->checkout([env("STRIPE_PRICE_ID") => $burgerCounts], [
-                    "success_url" => route("checkout.success", $order) . "?session_id={CHECKOUT_SESSION_ID}",
-                    "cancel_url" => route("checkout.cancel", $order),
-                ]);
-        } else {
-            abort(503, "No available chefs");
-        }
+        return $handler->handle($request);
     }
 
-    public function success(Request $request, Order $order) {
-        $checkoutSession = $request->user()->stripe()->checkout->sessions->retrieve($request->get('session_id'));
-        OrderService::savePaymentIntentId($order, $checkoutSession->payment_intent);
-        if ($order->customer_id !== $request->user()->id) {
-            abort(403);
-        }
-//        if ($or)
-        EmailNotificationService::sendReceiptEmail($order);
-        return redirect()->route("order.index");
+    public function success(Request $request, Order $order, CheckoutSuccessHandler $handler) {
+       return $handler->handle($request, $order);
     }
 
-    public function cancel(Request $request, Order $order) {
-        if ($order->customer_id !== $request->user()->id) {
-            abort(403);
-        }
-        OrderService::rollbackChefAssignment($order);
-        return redirect()->route("burgers.index");
+    public function cancel(Request $request, Order $order, CheckoutCancelHandler $handler) {
+        return $handler->handle($request, $order);
     }
 }

@@ -7,6 +7,8 @@ use App\Models\Location;
 class LocationRepository
 {
 
+    const LOCATION_SESSION_NAME = "location";
+
     public static function createLocation(array $location): void
     {
         $userId = auth()->id();
@@ -26,8 +28,18 @@ class LocationRepository
     }
 
     public static function getUserLocation($user) {
-        return Location::query()
-            ->where("user_id", "=", $user->id)
-            ->first();
+        return Location::getLocationByCustomerId($user->id);
+    }
+
+    public static function getCustomerLocation($userId)
+    {
+        if ($userId) {
+            return Location::getLocationByCustomerId($userId);
+        } else {
+            if (session()->exists(self::LOCATION_SESSION_NAME)) {
+                return session()->get(self::LOCATION_SESSION_NAME);
+            }
+        }
+        return null;
     }
 }

@@ -143,7 +143,5 @@ class OrderService
 
     public static function savePaymentIntentId(Order $order, $payment_intent): void
     {
-        $order->payment_intent_id = $payment_intent;
-        $order->save();
     }
 }

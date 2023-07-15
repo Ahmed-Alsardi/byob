@@ -78,4 +78,10 @@ class Order extends Model
             "status" => $orderStatus,
         ]);
     }
+
+    public function savePaymentIntentId($payment_intent)
+    {
+        $this->payment_intent_id = $payment_intent;
+        $this->save();
+    }
 }
