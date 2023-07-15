@@ -19,4 +19,13 @@ class BurgerCustomization extends Model
     {
         return BurgerCustomization::all();
     }
+
+    public static function insertCustomization($category, $value)
+    {
+        return self::query()
+            ->insert([
+                "category" => $category,
+                "name" => $value
+            ]);
+    }
 }
