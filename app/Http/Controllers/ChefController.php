@@ -2,80 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use App\Helper\UserRole;
+use App\Features\Chef\ChefAvailableHandler;
+use App\Features\Chef\ChefViewsHandler;
+use App\Http\Requests\StoreChefRequest;
+use App\Http\Requests\UpdateChefAvailabilityRequest;
+use App\Http\Requests\UpdateChefRequest;
 use App\Models\Chef;
-use App\Services\ChefRepository;
-use App\Services\ChefService;
 use Illuminate\Http\Request;
 
 class ChefController extends Controller
 {
-    public function index() {
-        if (auth()->user()->role !== UserRole::ADMIN) {
-            abort(403);
-        }
-        return view("chef.index", [
-            "chefs" => ChefRepository::getAllChefs()
-        ]);
+    public function index(Request $request, ChefViewsHandler $handler) {
+        return $handler->handleList($request);
     }
 
-    public function show(Request $request, Chef $chef) {
-        if ($request->user()->role !== UserRole::ADMIN) {
-            abort(403);
-        }
-        return view("chef.show", [
-            "chef" => $chef
-        ]);
+    public function show(Request $request, Chef $chef, ChefViewsHandler $handler) {
+        return $handler->handleShow($request, $chef);
     }
 
-    public function create(Request $request) {
-        return view("chef.create");
+    public function create(Request $request, ChefViewsHandler $handler) {
+        return $handler->handleCreate($request);
     }
 
-    public function store(Request $request) {
-        $validated = $request->validate([
-            "name" => "required",
-            "email" => "required|email|unique:users,email",
-        ]);
-        ChefService::createChef($validated);
-        return redirect()->route("chef.index");
+    public function store(StoreChefRequest $request, ChefViewsHandler $handler) {
+        return $handler->handleStore($request);
     }
 
-    public function changeAvailability(Request $request) {
-        if ($request->user()->role !== UserRole::CHEF) {
-            abort(403);
-        }
-        $validated = $request->validate([
-            "unavailable_for" => "required|int|min:-1|max:180"
-        ]);
-        ChefRepository::updateAvailability($request->user(), $validated["unavailable_for"]);
-        return redirect()->route("profile.edit");
+    public function changeAvailability(UpdateChefAvailabilityRequest $request, ChefAvailableHandler $handler) {
+        return $handler->handle($request);
     }
-    public function edit(Request $request, Chef $chef) {
-        if ($request->user()->role !== UserRole::ADMIN) {
-            abort(403);
-        }
-        return view("chef.edit", [
-            "chef" => $chef
-        ]);
+    public function edit(Request $request, Chef $chef, ChefViewsHandler $handler) {
+        return $handler->handleEdit($request, $chef);
     }
-    public function destroy(Request $request, Chef $chef) {
-        if ($request->user()->role !== UserRole::ADMIN) {
-            abort(403);
-        }
-        $chef->delete();
-        return redirect()->route("chef.index");
+    public function destroy(Request $request, Chef $chef, ChefViewsHandler $handler) {
+        return $handler->handleDestroy($request, $chef);
     }
 
-    public function update(Request $request, Chef $chef) {
-        if ($request->user()->role !== UserRole::ADMIN) {
-            abort(403);
-        }
-        $validated = $request->validate([
-            "name" => "nullable",
-            "email" => "nullable|email|unique:users,email," . $chef->id,
-        ]);
-        ChefService::updateChef($chef, $validated);
-        return redirect()->route("chef.index");
+    public function update(UpdateChefRequest $request, Chef $chef, ChefViewsHandler $handler) {
+        return $handler->handleUpdate($request, $chef);
     }
 }

@@ -8,6 +8,13 @@ use App\Repository\UserRepository;
 class Chef extends User
 {
 
+    public static function deleteChefWithId(mixed $chefId)
+    {
+        return self::query()
+            ->find($chefId)
+            ->delete();
+    }
+
     protected static function boot()
     {
         parent::boot();
@@ -30,4 +37,20 @@ class Chef extends User
         return $this->hasMany(Order::class, "chef_id", "id");
     }
 
+    public static function createChef($name, $email, $password) {
+        return self::query()
+            ->create([
+                "name" => $name,
+                "email" => $email,
+                "password" => $password,
+            ]);
+    }
+
+    public function updateInformation($name, $email)
+    {
+        return $this->update([
+            "name" => $name ?? $this->name,
+            "email" => $email ?? $this->email,
+        ]);
+    }
 }
