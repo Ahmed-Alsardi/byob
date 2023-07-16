@@ -15,6 +15,7 @@ class ComplaintController extends Controller
      */
     public function index(Request $request, ComplaintViewHandler $handler)
     {
+        $this->authorize("view-list-complaint");
         return $handler->handleList($request);
     }
 
@@ -23,6 +24,7 @@ class ComplaintController extends Controller
      */
     public function show(Request $request, Complaint $complaint, ComplaintViewHandler $handler)
     {
+        $this->authorize("view-complaint", $complaint);
         return $handler->handleShow($request, $complaint);
     }
 
@@ -31,6 +33,7 @@ class ComplaintController extends Controller
      */
     public function update(UpdateComplaintRequest $request, Complaint $complaint, ComplaintViewHandler $handler)
     {
+        $this->authorize("update-complaint", $complaint);
         return $handler->handleUpdate($request, $complaint);
     }
 }

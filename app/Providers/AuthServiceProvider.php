@@ -19,10 +19,7 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @var array<class-string, class-string>
      */
-    protected $policies = [
-        Complaint::class => ComplaintPolicy::class,
-        BurgerCustomization::class => BurgerCustomizationPolicy::class,
-    ];
+    protected $policies = [];
 
     /**
      * Register any authentication / authorization services.
@@ -33,6 +30,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->checkoutGate();
         $this->locationGate();
         $this->ChefGate();
+        $this->ComplaintGate();
     }
 
     public function checkoutGate(): void
@@ -56,5 +54,14 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('update-chef', [ChefPolicy::class, 'update']);
         Gate::define('delete-chef', [ChefPolicy::class, 'delete']);
         Gate::define('update-available', [ChefPolicy::class, 'updateAvailable']);
+    }
+
+    private function ComplaintGate()
+    {
+        Gate::define('view-list-complaint', [ComplaintPolicy::class, 'viewList']);
+        Gate::define('view-complaint', [ComplaintPolicy::class, 'view']);
+        Gate::define('create-complaint', [ComplaintPolicy::class, 'create']);
+        Gate::define('store-complaint', [ComplaintPolicy::class, 'store']);
+        Gate::define('update-complaint', [ComplaintPolicy::class, 'update']);
     }
 }

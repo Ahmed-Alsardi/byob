@@ -21,8 +21,8 @@ class Order extends Model
     public static function getOrderById($order_id)
     {
         return self::query()
-            ->find($order_id)
-            ->get();
+            ->where("id", "=", $order_id)
+            ->first();
     }
 
     public function burgers()

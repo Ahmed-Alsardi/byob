@@ -9,6 +9,14 @@ class Complaint extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'order_id',
+        'customer_message',
+        'admin_message',
+        'admin_id',
+        'refund'
+    ];
+
   public static function createComplaint(mixed $id, string $customerMessage)
   {
       return Complaint::create([
