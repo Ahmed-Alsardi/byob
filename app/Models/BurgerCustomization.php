@@ -28,4 +28,22 @@ class BurgerCustomization extends Model
                 "name" => $value
             ]);
     }
+
+    public static function getCustomizationId($category, $value)
+    {
+        return self::query()
+            ->where("category", $category)
+            ->where("name", $value)
+            ->first()
+            ?->id;
+    }
+
+    public static function getCustomizationName($category, $id)
+    {
+        return self::query()
+            ->where("category", $category)
+            ->where("id", $id)
+            ->first()
+            ?->name;
+    }
 }

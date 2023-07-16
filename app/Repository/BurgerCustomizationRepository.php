@@ -15,22 +15,14 @@ class BurgerCustomizationRepository
 
     const CUSTOMIZATION_CACHE_NAME = "customizations";
 
-    public static function getId(string $category, string $name): int
+    public static function getId(string $category, string $name)
     {
-        return BurgerCustomization::query()
-            ->where("category", $category)
-            ->where("name", $name)
-            ->first()
-            ->id;
+        return BurgerCustomization::getCustomizationId($category, $name);
     }
 
-    public static function getName(string $category, int $id): string
+    public static function getName(string $category, int $id)
     {
-        return BurgerCustomization::query()
-            ->where("category", $category)
-            ->where("id", $id)
-            ->first()
-            ->name;
+        return BurgerCustomization::getCustomizationName($category, $id);
     }
 
     public static function getAllCustomization()
@@ -38,7 +30,7 @@ class BurgerCustomizationRepository
         return Cache::rememberForever(self::CUSTOMIZATION_CACHE_NAME, fn() => BurgerCustomization::getAll());
     }
 
-    public static function addCustomization(mixed $category, mixed $name)
+    public static function addCustomization($category, $name)
     {
         BurgerCustomization::insertCustomization($category, $name);
         Cache::forget(self::CUSTOMIZATION_CACHE_NAME);
