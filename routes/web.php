@@ -55,7 +55,7 @@ Route::middleware('auth')->group(function () {
         Route::post("/{order}/complaint", [OrderController::class, "storeComplaint"])->name("order.storeComplaint");
     });
 
-    // Chef Administrator Routes
+    // Chef  Routes
     Route::prefix("/chefs")->group(function () {
         Route::get("/", [ChefController::class, "index"])->name("chef.index");
         Route::get("/create", [ChefController::class, "create"])->name("chef.create");
@@ -64,6 +64,7 @@ Route::middleware('auth')->group(function () {
         Route::delete("/{chef}", [ChefController::class, "destroy"])->name("chef.delete");
         Route::get("/{chef}/edit", [ChefController::class, "edit"])->name("chef.edit");
         Route::put("/{chef}/edit", [ChefController::class, "update"])->name("chef.update");
+        Route::put("/{chef}/available", [ChefController::class, "changeAvailability"])->name("chef.available");
     });
 
 

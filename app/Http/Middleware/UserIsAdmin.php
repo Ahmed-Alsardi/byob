@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Helper\UserRole;
+use App\Repository\UserRepository;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +16,7 @@ class UserIsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user()?->role !== UserRole::ADMIN) {
+        if ($request->user()?->role !== UserRepository::ADMIN) {
             return redirect()->route('home');
         }
         return $next($request);

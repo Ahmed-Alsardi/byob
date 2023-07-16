@@ -1,7 +1,7 @@
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900">
-            @if(auth()->user()->isAvailable())
+            @if(auth()->user()->available && auth()->user()->unavailable_until < now())
                 {{ __('Currently Available') }}
             @else
                 {{ __('Currently Unavailable until: ' . auth()->user()->unavailable_until) }}
@@ -12,6 +12,7 @@
             {{ __("Update your account's availability") }}
         </p>
     </header>
+
     <form action="{{route('chef.available', auth()->user())}}" method="POST">
         @csrf
         @method('PUT')

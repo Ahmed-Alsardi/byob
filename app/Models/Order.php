@@ -134,25 +134,23 @@ class Order extends Model
 
     public function rollbackChefAssignment()
     {
-        $this->update([
-            'status' => OrderRepository::REQUIRED_PAYMENT,
-            'chef_id' => null,
-            'chef_assigned_at' => null,
-            'city' => null,
-            'street' => null,
-            'house_number' => null,
-        ]);
+        $this->status = OrderRepository::REQUIRED_PAYMENT;
+        $this->chef_id = null;
+        $this->chef_assigned_at = null;
+        $this->city = null;
+        $this->street = null;
+        $this->house_number = null;
+        $this->save();
     }
 
     public function assignChef($chefId, $location)
     {
-        $this->update([
-            "status" => OrderRepository::IN_PROGRESS,
-            "chef_id" => $chefId,
-            "chef_assigned_at" => now(),
-            "city" => $location->city,
-            "street" => $location->street,
-            "house_number" => $location->house_number,
-        ]);
+        $this->status = OrderRepository::IN_PROGRESS;
+        $this->chef_id = $chefId;
+        $this->chef_assigned_at = now();
+        $this->city = $location->city;
+        $this->street = $location->street;
+        $this->house_number = $location->house_number;
+        $this->save();
     }
 }

@@ -34,9 +34,21 @@ class Location extends Model
             ]);
     }
 
+    public static function updateOrCreateUserLocation($userId, array $location)
+    {
+        Location::updateOrCreate(
+            ["user_id" => $userId],
+            [
+                "city" => $location["city"],
+                "street" => $location["street"],
+                "house_number" => $location["house_number"]
+            ]
+        );
+    }
+
     public function updateLocation(array $location)
     {
-        $this->update([
+        return $this->update([
             "city" => $location["city"],
             "street" => $location["street"],
             "house_number" => $location["house_number"],

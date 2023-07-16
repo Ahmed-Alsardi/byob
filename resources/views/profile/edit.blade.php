@@ -18,7 +18,7 @@
                     @include('profile.partials.update-password-form')
                 </div>
             </div>
-            @if(auth()->user()->role === \App\Helper\UserRole::CHEF)
+            @if(auth()->user()->role === \App\Repository\UserRepository::CHEF)
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                     <div class="max-w-xl">
                         @include('profile.partials.update-chef-availablity-form')

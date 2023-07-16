@@ -18,18 +18,15 @@ class Chef extends User
 
     public static function changeChefStatus($chefId, bool $status)
     {
-        self::query()
-            ->find($chefId)
-            ->update([
-                "available" => $status,
-            ]);
+        $chef = self::query()
+            ->find($chefId);
+        $chef?->changeChefAvailable($status);
     }
 
     public function changeChefAvailable(bool $status)
     {
-        $this->update([
-            "available" => $status,
-        ]);
+        $this->available = $status;
+        $this->save();
     }
 
     public static function getAllAvailableChefs()
@@ -84,10 +81,9 @@ class Chef extends User
 
     public function updateInformation($name, $email)
     {
-        return $this->update([
-            "name" => $name ?? $this->name,
-            "email" => $email ?? $this->email,
-        ]);
+        $this->name = $this->name ?? $name;
+        $this->email = $this->email ?? $email;
+        $this->save();
     }
 
     public function isAvailable()

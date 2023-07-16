@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Helper\UserRole;
+use App\Repository\UserRepository;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
@@ -18,7 +19,7 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
-        $roles = [UserRole::ADMIN, UserRole::CUSTOMER, UserRole::CHEF];
+        $roles = [UserRepository::ADMIN, UserRepository::CUSTOMER, UserRepository::CHEF];
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
