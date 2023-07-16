@@ -9,26 +9,16 @@ class LocationRepository
 
     const LOCATION_SESSION_NAME = "location";
 
-    public static function createLocation(array $location): void
+    public static function createLocation($userId, array $location): void
     {
-        $userId = auth()->id();
         if ($userId) {
-            Location::query()->create([
-                "city" => $location["city"],
-                "street" => $location["street"],
-                "house_number" => $location["house_number"],
-                "user_id" => $userId,
-            ]);
+            Location::createCustomerLocation($userId, $location);
         } else {
             if (session()->exists("location")) {
                 session()->remove("location");
             }
-            session(["location" => $location]);
+            session([self::LOCATION_SESSION_NAME => $location]);
         }
-    }
-
-    public static function getUserLocation($user) {
-        return Location::getLocationByCustomerId($user->id);
     }
 
     public static function getCustomerLocation($userId)

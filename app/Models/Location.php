@@ -24,6 +24,17 @@ class Location extends Model
             ->get();
     }
 
+    public static function createCustomerLocation($userId, array $location)
+    {
+        return self::query()
+            ->create([
+                "city" => $location["city"],
+                "street" => $location["street"],
+                "house_number" => $location["house_number"],
+                "user_id" => $userId,
+            ]);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
