@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Policies\CheckoutPolicy;
 use App\Policies\ChefPolicy;
 use App\Policies\LocationPolicy;
+use App\Policies\OrderPolicy;
+use App\Repository\OrderRepository;
 use Illuminate\Support\Facades\Gate;
 use App\Models\BurgerCustomization;
 use App\Models\Complaint;
@@ -31,6 +33,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->locationGate();
         $this->ChefGate();
         $this->ComplaintGate();
+        $this->OrderGate();
     }
 
     public function checkoutGate(): void
@@ -63,5 +66,15 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('create-complaint', [ComplaintPolicy::class, 'create']);
         Gate::define('store-complaint', [ComplaintPolicy::class, 'store']);
         Gate::define('update-complaint', [ComplaintPolicy::class, 'update']);
+    }
+
+    private function OrderGate()
+    {
+        Gate::define('view-list-order', [OrderPolicy::class, 'viewList']);
+        Gate::define('view-order', [OrderPolicy::class, 'view']);
+        Gate::define('order-complaint', [OrderPolicy::class, 'orderComplaint']);
+        Gate::define('complete-order', [OrderPolicy::class, 'completeOrder']);
+        Gate::define('create-complaint', [OrderPolicy::class, 'createComplaint']);
+        Gate::define('store-complaint', [OrderPolicy::class, 'storeComplaint']);
     }
 }
