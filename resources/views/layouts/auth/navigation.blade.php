@@ -18,22 +18,22 @@
                     <x-auth.nav-link :href="route('order.index')" :active="request()->routeIs('order.index')">
                         {{ __('Orders') }}
                     </x-auth.nav-link>
-                    @if(auth()->user()->role == \App\Helper\UserRole::CUSTOMER)
+                    @if(auth()->user()->role == \App\Repository\UserRepository::CUSTOMER)
                         <x-auth.nav-link :href="route('location.create')" :active="request()->routeIs('location.create')">
                             {{ __('Location') }}
                         </x-auth.nav-link>
                     @endif
-                    @if(auth()->user()->role == \App\Helper\UserRole::ADMIN || auth()->user()->role == \App\Helper\UserRole::CUSTOMER)
+                    @if(auth()->user()->role == \App\Repository\UserRepository::ADMIN || auth()->user()->role == \App\Repository\UserRepository::CUSTOMER)
                         <x-auth.nav-link :href="route('complaint.index')" :active="request()->routeIs('complaint.index')">
                             {{ __('Complaints') }}
                         </x-auth.nav-link>
                     @endif
-                    @if(auth()->user()->role == \App\Helper\UserRole::ADMIN)
+                    @if(auth()->user()->role == \App\Repository\UserRepository::ADMIN)
                         <x-auth.nav-link :href="route('chef.index')" :active="request()->routeIs('chef.index')">
                             {{ __('Chefs') }}
                         </x-auth.nav-link>
                     @endif
-                    @if(auth()->user()->role == \App\Helper\UserRole::ADMIN)
+                    @if(auth()->user()->role == \App\Repository\UserRepository::ADMIN)
                         <x-auth.nav-link :href="route('customization.index')" :active="request()->routeIs('customization.index')">
                             {{ __('Customization') }}
                         </x-auth.nav-link>

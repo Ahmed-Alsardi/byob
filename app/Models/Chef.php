@@ -79,4 +79,8 @@ class Chef extends User
             "email" => $email ?? $this->email,
         ]);
     }
+
+    public function isAvailable() {
+        return $this->available && $this->unavailable_until < now();
+    }
 }
