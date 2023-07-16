@@ -15,7 +15,16 @@ class Chef extends User
             ->delete();
     }
 
-    protected static function boot()
+  public static function changeChefStatus($chefId, bool $status)
+  {
+      self::query()
+            ->find($chefId)
+            ->update([
+                "available" => $status,
+            ]);
+  }
+
+  protected static function boot()
     {
         parent::boot();
         static::creating(function ($chef) {

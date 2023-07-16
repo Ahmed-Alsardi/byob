@@ -49,7 +49,7 @@ Route::middleware('auth')->group(function () {
         Route::get("/", [OrderController::class, "index"])->name("order.index");
         Route::get("/{order}", [OrderController::class, "show"])->name("order.show");
         Route::post("/{order}/complete", [OrderController::class, "complete"])->name("order.complete");
-        Route::get("/{order}/complaint", [OrderController::class, "complaint"])->name("order.complaint");
+        Route::get("/{order}/complaint", [OrderController::class, "complaintCreate"])->name("order.complaint");
         Route::post("/{order}/complaint", [OrderController::class, "storeComplaint"])->name("order.storeComplaint");
     });
 

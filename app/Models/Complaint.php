@@ -9,7 +9,15 @@ class Complaint extends Model
 {
     use HasFactory;
 
-    public function order()
+  public static function createComplaint(mixed $id, string $customerMessage)
+  {
+      return Complaint::create([
+          'order_id' => $id,
+          'customer_message' => $customerMessage
+      ]);
+  }
+
+  public function order()
     {
         return $this->belongsTo(Order::class);
     }

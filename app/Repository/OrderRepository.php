@@ -2,13 +2,10 @@
 
 namespace App\Repository;
 
-use App\Helper\OrderStatus;
-use App\Helper\UserRole;
-use App\Models\Customer;
+use App\Models\Chef;
 use App\Models\Order;
-use App\Repository\CustomerRepository\CustomerRepository;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderRepository
 {
@@ -23,6 +20,24 @@ class OrderRepository
 
     const BURGER_PRICE = 1000;
 
+    const COLUMN_NAME = 'column_name';
+    const METHOD_NAME = 'method_name';
+
+    const ROLE_ORDER = [
+        UserRepository::CUSTOMER => [
+            self::COLUMN_NAME => 'customer_id',
+            self::METHOD_NAME => 'getOrdersByUser'
+        ],
+        UserRepository::CHEF => [
+            self::COLUMN_NAME => 'chef_id',
+            self::METHOD_NAME => 'getOrdersByUser'
+        ],
+        UserRepository::ADMIN => [
+            self::COLUMN_NAME => null,
+            self::METHOD_NAME => 'getAllOrders'
+        ],
+    ];
+
     public static function getCustomerUnpaidOrder($userId): array|Collection
     {
         return Order::getCustomerOrderWithStatus($userId, self::REQUIRED_PAYMENT);
@@ -30,7 +45,7 @@ class OrderRepository
 
     public static function getUnpaidOrCreate($user, $removeExistingBurgers = false)
     {
-        $order = Order::getCustomerOrderWithStatus($user)->first();
+        $order = Order::getCustomerOrderWithStatus($user, self::REQUIRED_PAYMENT)->first();
         if ($order && $removeExistingBurgers) {
             $order->burgers->map(fn($burger) => $burger->forceDelete());
         }
@@ -41,22 +56,14 @@ class OrderRepository
             ]);
     }
 
-    public static function getOrdersByUser(): Collection
+    public static function getOrdersByUser($user)
     {
-        $user = auth()->user();
-        if ($user->role === UserRole::CUSTOMER) {
-            return Order::query()
-                ->where("customer_id", "=", $user->id)
-                ->with("burgers")
-                ->get();
-        } else if ($user->role === UserRole::ADMIN) {
-            return Order::with('burgers')->get();
-        } else {
-            return Order::query()
-                ->where("chef_id", "=", $user->id)
-                ->with("burgers")
-                ->get();
+        if (array_key_exists($user->role, self::ROLE_ORDER)) {
+            $method = self::ROLE_ORDER[$user->role][self::METHOD_NAME];
+            $columnName = self::ROLE_ORDER[$user->role][self::COLUMN_NAME];
+            return Order::$method($columnName, $user->id);
         }
+        return null;
     }
 
     public static function getCustomerBurgers($userId = null)
@@ -137,6 +144,33 @@ class OrderRepository
         } else {
             $order->updateStatus(self::REFUND_REJECTED);
         }
+    }
+
+    public static function completeOrder($chefId, Order $order)
+    {
+        return DB::transaction(function () use ($chefId, $order) {
+            try {
+                $order->completeOrder(self::COMPLETED);
+                Chef::changeChefStatus($chefId, true);
+                return true;
+            } catch (\Exception $e) {
+                return false;
+            }
+        });
+    }
+
+    public static function orderHasComplaint(Order $order)
+    {
+        return (bool)$order->complaint;
+    }
+
+    public static function createOrderComplaint(Order $order, mixed $message)
+    {
+    }
+
+    public static function changeOrderStatus(Order $order, string $status)
+    {
+        $order->updateStatus($status);
     }
 
 }

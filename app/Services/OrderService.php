@@ -13,9 +13,6 @@ use Illuminate\Support\Facades\DB;
 class OrderService
 {
 
-    const ORDER_TIME = 5;
-    const BURGER_PRICE = 1000;
-
     public static function assignOrderToChef($order): bool
     {
         return DB::transaction(function () use ($order) {
@@ -55,29 +52,6 @@ class OrderService
         });
     }
 
-    public static function calculatePrice(Order $order = null, $burgers = null): float
-    {
-        if ($order) {
-            $quantity = $order->burgers->count();
-        } else if ($burgers) {
-            $quantity = count($burgers);
-        } else {
-            return -1;
-        }
-        return $quantity * self::BURGER_PRICE;
-    }
-
-    public static function calculateAndSavePrice($order): float
-    {
-        $total_price = self::calculatePrice($order);
-        if ($total_price <= 0) {
-            return -1;
-        }
-        $order->total_price = $total_price;
-        $order->save();
-        return $total_price;
-    }
-
     /**
      * @throws \Exception
      */
@@ -114,34 +88,5 @@ class OrderService
             }
         }
         return $chef;
-    }
-
-    public static function completeOrder($chef, Order $order)
-    {
-        return DB::transaction(function () use ($chef, $order) {
-            try {
-                $chef->available = true;
-                $order->status = OrderRepository::COMPLETED;
-                $order->completed_at = now();
-                $order->save();
-                $chef->save();
-                return true;
-            } catch (\Exception $e) {
-                return false;
-            }
-        });
-    }
-
-    public static function complaintOrder(Order $order, string $message)
-    {
-        return DB::transaction(function () use ($order, $message) {
-            $order->status = OrderRepository::COMPLAINT;
-            $order->save();
-            return ComplaintRepository::createComplaint($order, $message);
-        });
-    }
-
-    public static function savePaymentIntentId(Order $order, $payment_intent): void
-    {
     }
 }

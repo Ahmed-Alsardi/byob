@@ -97,4 +97,23 @@ class Order extends Model
         $this->save();
         return $this;
     }
+
+    public static function getOrdersByUser($columnName, $userId): Collection|array
+    {
+        return Order::query()
+            ->where($columnName, "=", $userId)
+            ->get();
+    }
+
+    public static function getAllOrders(): Collection|array
+    {
+        return Order::all();
+    }
+
+    public function completeOrder(string $status)
+    {
+        $this->status = $status;
+        $this->completed_at = now();
+        $this->save();
+    }
 }

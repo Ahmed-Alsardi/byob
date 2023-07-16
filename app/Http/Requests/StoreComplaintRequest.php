@@ -11,7 +11,7 @@ class StoreComplaintRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class StoreComplaintRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "message" => "required|string|max:255"
         ];
     }
 }

@@ -17,13 +17,12 @@ class ComplaintRepository
         UserRepository::CUSTOMER => Customer::class
     ];
 
-    public static function createComplaint(Order $order, string $message)
+    public static function createComplaint(Order $order, string $customerMessage)
     {
-        $complaint = new Complaint();
-        $complaint->order_id = $order->id;
-        $complaint->customer_message = $message;
-        $complaint->save();
-        return $complaint;
+        return DB::transaction(function() use ($order, $customerMessage) {
+            OrderRepository::changeOrderStatus($order, OrderRepository::COMPLAINT);
+            return Complaint::createComplaint($order->id, $customerMessage);
+        });
     }
 
     public static function getComplaintsByUserId($userId, $userRole)
