@@ -38,7 +38,7 @@ class OrderRepository
         ],
     ];
 
-    public static function getCustomerUnpaidOrder($userId): array|Collection
+    public static function getCustomerUnpaidOrder($userId)
     {
         return Order::getCustomerOrderWithStatus($userId, self::REQUIRED_PAYMENT);
     }
@@ -167,10 +167,6 @@ class OrderRepository
     public static function orderHasComplaint(Order $order)
     {
         return (bool)$order->complaint;
-    }
-
-    public static function createOrderComplaint(Order $order, mixed $message)
-    {
     }
 
     public static function changeOrderStatus(Order $order, string $status)
