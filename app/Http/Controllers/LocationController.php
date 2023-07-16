@@ -23,6 +23,7 @@ class LocationController extends Controller
      */
     public function create(Request $request, LocationViewsHandler $handler)
     {
+        $this->authorize('create-location');
         return $handler->handleCreate($request);
     }
 
@@ -31,6 +32,7 @@ class LocationController extends Controller
      */
     public function store(StoreLocationRequest $request, LocationViewsHandler $handler)
     {
+        $this->authorize('store-location');
         return $handler->handleStore($request);
     }
 }

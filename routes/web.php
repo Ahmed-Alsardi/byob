@@ -33,9 +33,6 @@ Route::post("/location", [LocationController::class, "store"])->name("location.s
 Route::get("/checkout", [CheckoutController::class, "create"])->name("checkout.create");
 Route::post("/checkout", [CheckoutController::class, "store"])->name("checkout.store");
 
-Route::get("/checkout/success/{order}", [CheckoutController::class, "success"])->name("checkout.success");
-Route::get("/checkout/cancel/{order}", [CheckoutController::class, "cancel"])->name("checkout.cancel");
-
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -44,6 +41,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Checkout Routes
+    Route::get("/checkout/success/{order}", [CheckoutController::class, "success"])->name("checkout.success");
+    Route::get("/checkout/cancel/{order}", [CheckoutController::class, "cancel"])->name("checkout.cancel");
+
     // Order Routes
     Route::prefix('/orders')->group(function () {
         Route::get("/", [OrderController::class, "index"])->name("order.index");

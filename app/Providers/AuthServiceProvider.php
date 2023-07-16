@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-// use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Gate;
 use App\Models\BurgerCustomization;
 use App\Models\Complaint;
 use App\Policies\BurgerCustomizationPolicy;
@@ -26,6 +26,21 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $this->registerPolicies();
+        $this->checkoutGate();
+        $this->locationGate();
+    }
+
+    public function checkoutGate(): void
+    {
+        Gate::define('create-checkout', 'App\Policies\CheckoutPolicy@create');
+        Gate::define('store-checkout', 'App\Policies\CheckoutPolicy@store');
+        Gate::define('success-checkout', 'App\Policies\CheckoutPolicy@success');
+        Gate::define('cancel-checkout', 'App\Policies\CheckoutPolicy@cancel');
+    }
+
+    public function locationGate() {
+        Gate::define('create-location', 'App\Policies\LocationPolicy@create');
+        Gate::define('store-location', 'App\Policies\LocationPolicy@store');
     }
 }

@@ -45,7 +45,7 @@ class OrderRepository
 
     public static function getUnpaidOrCreate($user, $removeExistingBurgers = false)
     {
-        $order = Order::getCustomerOrderWithStatus($user, self::REQUIRED_PAYMENT)->first();
+        $order = Order::getCustomerOrderWithStatus($user, self::REQUIRED_PAYMENT);
         if ($order && $removeExistingBurgers) {
             $order->burgers->map(fn($burger) => $burger->forceDelete());
         }
