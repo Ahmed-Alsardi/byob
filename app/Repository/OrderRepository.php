@@ -109,7 +109,7 @@ class OrderRepository
 
     private static function _getBurgersFromOrders($order) {
         if ($order && $order->burgers) {
-            return $order->burgers->map(fn($burger) => BurgerRepository::convertFromEntityToArray($burger));
+            return $order->burgers->map(fn($burger) => BurgerRepository::convertBurgerToReadableIngredient($burger));
         }
         return null;
     }

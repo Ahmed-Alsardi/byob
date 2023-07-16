@@ -24,7 +24,24 @@ class Chef extends User
             ]);
   }
 
-  protected static function boot()
+    public static function getAllAvailableChefs()
+    {
+        return self::query()
+            ->where("available", "=", true)
+            ->where("unavailable_until", "<", now())
+            ->get();
+    }
+
+    public static function updateChefAvailability($userId, mixed $unavailable_for)
+    {
+        return self::query()
+            ->where("id", "=", $userId)
+            ->update([
+                "unavailable_until" => now()->addMinutes($unavailable_for)
+            ]);
+    }
+
+    protected static function boot()
     {
         parent::boot();
         static::creating(function ($chef) {

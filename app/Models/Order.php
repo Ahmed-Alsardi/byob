@@ -42,7 +42,7 @@ class Order extends Model
 
     public function burgersView()
     {
-        return $this->burgers->map(fn($burger) => BurgerRepository::convertFromEntityToArray($burger));
+        return $this->burgers->map(fn($burger) => BurgerRepository::convertBurgerToReadableIngredient($burger));
     }
 
     public function location()

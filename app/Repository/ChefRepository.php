@@ -18,10 +18,7 @@ class ChefRepository
 
     public static function getAllAvailableChef(): Collection
     {
-        return Chef::query()
-            ->where("available", "=", true)
-            ->where("unavailable_until", "<", now())
-            ->get();
+        return Chef::getAllAvailableChefs();
     }
 
     public static function createChef($name, $email)
@@ -30,13 +27,9 @@ class ChefRepository
         return self::sendChangePasswordEmail($email);
     }
 
-    public static function updateAvailability(mixed $user, mixed $unavailable_for)
+    public static function updateAvailability($userId, mixed $unavailable_for)
     {
-        return Chef::query()
-            ->where("id", "=", $user->id)
-            ->update([
-                "unavailable_until" => now()->addMinutes($unavailable_for)
-            ]);
+        Chef::updateChefAvailability($userId, $unavailable_for);
     }
 
     public static function deleteChef(mixed $chefId)
@@ -64,5 +57,4 @@ class ChefRepository
             : back()->withInput($email)
                 ->withErrors(['email' => __($status)]);
     }
-
 }
