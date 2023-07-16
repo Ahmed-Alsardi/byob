@@ -94,17 +94,22 @@ class OrderRepository
         }
     }
 
-    public static function calculatePrice(array $burgers)
+    public static function calculatePrice($burgers)
     {
         if (!$burgers) {
             return 0;
         }
-        return count($burgers) * self::BURGER_PRICE;
+        if ($burgers instanceof Collection) {
+            $count = $burgers->count();
+        } else {
+            $count = count($burgers);
+        }
+        return $count* self::BURGER_PRICE;
     }
 
     private static function _getBurgersFromOrders($order) {
         if ($order && $order->burgers) {
-            return BurgerRepository::convertFromEntityToArray($order->burgers);
+            return $order->burgers->map(fn($burger) => BurgerRepository::convertFromEntityToArray($burger));
         }
         return null;
     }

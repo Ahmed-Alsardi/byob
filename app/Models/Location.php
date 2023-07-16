@@ -20,8 +20,7 @@ class Location extends Model
     {
         return Location::query()
             ->where("user_id", $userId)
-            ->first()
-            ->get();
+            ->first();
     }
 
     public static function createCustomerLocation($userId, array $location)
@@ -33,6 +32,15 @@ class Location extends Model
                 "house_number" => $location["house_number"],
                 "user_id" => $userId,
             ]);
+    }
+
+    public function updateLocation(array $location)
+    {
+        $this->update([
+            "city" => $location["city"],
+            "street" => $location["street"],
+            "house_number" => $location["house_number"],
+        ]);
     }
 
     public function user()

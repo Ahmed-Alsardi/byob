@@ -12,7 +12,11 @@ class LocationRepository
     public static function createLocation($userId, array $location): void
     {
         if ($userId) {
-            Location::createCustomerLocation($userId, $location);
+            $userLocation = Location::getLocationByCustomerId($userId);
+            if (!$userLocation) {
+                Location::createCustomerLocation($userId, $location);
+            }
+            $userLocation->updateLocation($location);
         } else {
             if (session()->exists("location")) {
                 session()->remove("location");

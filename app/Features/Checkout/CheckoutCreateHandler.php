@@ -17,7 +17,7 @@ class CheckoutCreateHandler
             return redirect()->route("burgers.index");
         }
         $location = LocationRepository::getCustomerLocation($userId);
-        if ($location) {
+        if (!$location) {
             return redirect()->route("location.create");
         }
         $totalPrice = OrderRepository::calculatePrice($burgers);

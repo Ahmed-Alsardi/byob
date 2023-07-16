@@ -65,15 +65,16 @@ class Order extends Model
         return $this->customer->refund($this->payment_intent_id);
     }
 
-    public static function getCustomerOrderWithStatus($userId, $orderStatus): Collection|array
+    public static function getCustomerOrderWithStatus($userId, $orderStatus)
     {
         return Order::query()
             ->where("customer_id", "=", $userId)
             ->where("status", $orderStatus)
-            ->get();
+            ->latest()
+            ->first();
     }
 
-    public function deleteBurger()
+    public function deleteBurgers()
     {
         return $this->burgers()->delete();
     }

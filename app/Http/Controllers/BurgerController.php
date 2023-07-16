@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Features\Burgers\BurgerStore;
 use App\Features\Burgers\BurgerView;
 use App\Http\Requests\StoreBurgerRequest;
-use App\Repository\BurgerRepository;
-use App\Repository\OrderRepository;
 use Illuminate\Http\Request;
 
 class BurgerController extends Controller
