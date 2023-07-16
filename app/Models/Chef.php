@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helper\UserRole;
+use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
 
 class Chef extends User
@@ -15,14 +16,21 @@ class Chef extends User
             ->delete();
     }
 
-  public static function changeChefStatus($chefId, bool $status)
-  {
-      self::query()
+    public static function changeChefStatus($chefId, bool $status)
+    {
+        self::query()
             ->find($chefId)
             ->update([
                 "available" => $status,
             ]);
-  }
+    }
+
+    public function changeChefAvailable(bool $status)
+    {
+        $this->update([
+            "available" => $status,
+        ]);
+    }
 
     public static function getAllAvailableChefs()
     {
@@ -51,7 +59,8 @@ class Chef extends User
         });
     }
 
-    public static function booted() {
+    public static function booted()
+    {
         static::addGlobalScope('chef', function ($q) {
             $q->where("role", "=", UserRepository::CHEF);
         });
@@ -63,7 +72,8 @@ class Chef extends User
         return $this->hasMany(Order::class, "chef_id", "id");
     }
 
-    public static function createChef($name, $email, $password) {
+    public static function createChef($name, $email, $password)
+    {
         return self::query()
             ->create([
                 "name" => $name,
@@ -80,7 +90,9 @@ class Chef extends User
         ]);
     }
 
-    public function isAvailable() {
+    public function isAvailable()
+    {
         return $this->available && $this->unavailable_until < now();
     }
+
 }

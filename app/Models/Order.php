@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Repository\BurgerCustomizationRepository;
 use App\Repository\BurgerRepository;
+use App\Repository\OrderRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +23,14 @@ class Order extends Model
     {
         return self::query()
             ->where("id", "=", $order_id)
+            ->first();
+    }
+
+    public static function getLastOrder()
+    {
+        return self::query()
+            ->where("chef_id", "!=", null)
+            ->orderBy("chef_assigned_at", "desc")
             ->first();
     }
 
@@ -47,9 +56,6 @@ class Order extends Model
 
     public function location()
     {
-        if ($this->city == null) {
-            return null;
-        }
         return [
             "city" => $this->city,
             "street" => $this->street,
@@ -57,11 +63,13 @@ class Order extends Model
         ];
     }
 
-    public function complaint() {
+    public function complaint()
+    {
         return $this->hasOne(Complaint::class);
     }
 
-    public function refund() {
+    public function refund()
+    {
         return $this->customer->refund($this->payment_intent_id);
     }
 
@@ -93,7 +101,8 @@ class Order extends Model
         $this->save();
     }
 
-    public function updateStatus($status) {
+    public function updateStatus($status)
+    {
         $this->status = $status;
         $this->save();
         return $this;
@@ -116,5 +125,34 @@ class Order extends Model
         $this->status = $status;
         $this->completed_at = now();
         $this->save();
+    }
+
+    public function getChef()
+    {
+        return $this->chef;
+    }
+
+    public function rollbackChefAssignment()
+    {
+        $this->update([
+            'status' => OrderRepository::REQUIRED_PAYMENT,
+            'chef_id' => null,
+            'chef_assigned_at' => null,
+            'city' => null,
+            'street' => null,
+            'house_number' => null,
+        ]);
+    }
+
+    public function assignChef($chefId, $location)
+    {
+        $this->update([
+            "status" => OrderRepository::IN_PROGRESS,
+            "chef_id" => $chefId,
+            "chef_assigned_at" => now(),
+            "city" => $location->city,
+            "street" => $location->street,
+            "house_number" => $location->house_number,
+        ]);
     }
 }

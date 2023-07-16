@@ -57,4 +57,35 @@ class ChefRepository
             : back()->withInput($email)
                 ->withErrors(['email' => __($status)]);
     }
+
+    public static function getChefToAssignOrder(): Chef {
+        $chefs = self::getAllAvailableChef();
+        if ($chefs->count() == 0) {
+            throw new \Exception("No chefs available");
+        }
+        if ($chefs->count() == 1) {
+            return $chefs->first();
+        }
+        // get the chef of the last order
+        $lastOrder = OrderRepository::getLastOrder();
+        if ($lastOrder == null) {
+            $chef = $chefs->first();
+            if ($chef == null) {
+                throw new \Exception("No chefs available");
+            }
+            return $chef;
+        }
+        $chef = $chefs
+            ->where("id", ">", $lastOrder->chef_id)
+            ->sortBy("id")
+            ->first();
+        // sort the chefs based on the unavailability time
+        if ($chef == null) {
+            $chef = $chefs->first();
+            if ($chef == null) {
+                throw new \Exception("No chefs available");
+            }
+        }
+        return $chef;
+    }
 }

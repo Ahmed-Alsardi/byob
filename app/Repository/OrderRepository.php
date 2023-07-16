@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Models\Chef;
+use App\Models\Customer;
 use App\Models\Order;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
@@ -72,7 +73,7 @@ class OrderRepository
             $order = Order::getCustomerOrderWithStatus($userId, self::REQUIRED_PAYMENT);
             return self::_getBurgersFromOrders($order);
         } else {
-            if (session()->exists(BurgerRepository::BURGER_SESSION_NAME)){
+            if (session()->exists(BurgerRepository::BURGER_SESSION_NAME)) {
                 return session()->get(BurgerRepository::BURGER_SESSION_NAME);
             }
         }
@@ -83,7 +84,7 @@ class OrderRepository
     {
         if ($userId) {
             $order = Order::getCustomerOrderWithStatus($userId, self::REQUIRED_PAYMENT);
-            if ($order){
+            if ($order) {
                 $order->deleteBurgers();
             } else {
                 $order = Order::createOrderWithStatus($userId, self::REQUIRED_PAYMENT);
@@ -104,10 +105,11 @@ class OrderRepository
         } else {
             $count = count($burgers);
         }
-        return $count* self::BURGER_PRICE;
+        return $count * self::BURGER_PRICE;
     }
 
-    private static function _getBurgersFromOrders($order) {
+    private static function _getBurgersFromOrders($order)
+    {
         if ($order && $order->burgers) {
             return $order->burgers->map(fn($burger) => BurgerRepository::convertBurgerToReadableIngredient($burger));
         }
@@ -132,7 +134,7 @@ class OrderRepository
 
     public static function savePaymentIntentId(Order $order, $payment_intent)
     {
-       $order->savePaymentIntentId($payment_intent);
+        $order->savePaymentIntentId($payment_intent);
     }
 
     public static function resolveComplaintOrder(mixed $refund, mixed $order_id)
@@ -174,4 +176,40 @@ class OrderRepository
         $order->updateStatus($status);
     }
 
+    public static function getLastOrder()
+    {
+        return Order::getLastOrder();
+    }
+
+    public static function getOrderById($orderId)
+    {
+        return Order::getOrderById($orderId);
+    }
+
+    public static function assignOrderToChef($orderId): bool
+    {
+        return DB::transaction(function () use ($orderId) {
+            $order = self::getOrderById($orderId);
+            try {
+                $chef = ChefRepository::getChefToAssignOrder();
+            } catch (\Exception $e) {
+                return false;
+            }
+            $chef->changeChefAvailable(false);
+            $location = LocationRepository::getCustomerLocation($order->customer_id);
+            $order->assignChef($chef->id, $location);
+            return true;
+        });
+    }
+
+    public static function rollbackChefAssignment(Order $order): bool
+    {
+        return DB::transaction(function () use ($order) {
+            $chef = $order->getChef();
+            $chef->changeChefAvailable(true);
+            $chef->available = true;
+            $order->rollbackChefAssignment();
+            return true;
+        });
+    }
 }

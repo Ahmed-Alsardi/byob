@@ -15,7 +15,7 @@ class CheckoutStoreHandler
         if (!$data) {
             abort(500, "Error happend when getting Order data");
         }
-        if (OrderService::assignOrderToChef($data["orderId"])) {
+        if (OrderRepository::assignOrderToChef($data["orderId"])) {
             return auth()
                 ->user()
                 ->checkout([env("STRIPE_PRICE_ID") => $data['burgersCount']], [
