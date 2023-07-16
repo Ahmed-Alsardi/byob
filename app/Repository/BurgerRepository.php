@@ -7,19 +7,21 @@ use App\Models\Burger;
 class BurgerRepository
 {
 
-    public static function createBurger(array $burgers, int $order_id = null): void
+    const BURGER_SESSION_NAME = "burgers";
+
+    public static function createBurgers(array $burgers, int $order_id = null): void
     {
         if ($order_id){
             self::_insertBurger($burgers, $order_id);
         } else {
-            if (session()->exists("burgers")) {
-                session()->remove("burgers");
+            if (session()->exists(self::BURGER_SESSION_NAME)) {
+                session()->remove(self::BURGER_SESSION_NAME);
             }
-            session(["burgers" => $burgers]);
+            session([self::BURGER_SESSION_NAME => $burgers]);
         }
     }
 
-    public static function convertFromEntityToArray(Burger $burger): array
+    public static function convertBurgerToReadableIngredient(Burger $burger): array
     {
         $meat = BurgerCustomizationRepository::getName("meat", $burger->meat_id);
         $bread = BurgerCustomizationRepository::getName("bread", $burger->bread_id);
@@ -40,28 +42,27 @@ class BurgerRepository
     {
         $burgerList = [];
         foreach ($burgers as $b) {
-            $meat_id = BurgerCustomizationRepository::getId("meat", $b['meat']);
-            $bread_id = BurgerCustomizationRepository::getId("bread", $b['bread']);
-            $sides = [];
-            if (isset($b["sides"])) {
-                foreach ($b['sides'] as $side) {
-                    $sides[] = BurgerCustomizationRepository::getId("side", $side);
-                }
+            $burgerList[] = self::_buildBurger($b);
+        }
+        foreach ($burgerList as $b ) {
+            Burger::insertBurger($b, $order_id);
+        }
+    }
+
+    private static function _buildBurger($b) {
+        $meat_id = BurgerCustomizationRepository::getId("meat", $b['meat']);
+        $bread_id = BurgerCustomizationRepository::getId("bread", $b['bread']);
+        $sides = [];
+        if (isset($b["sides"])) {
+            foreach ($b['sides'] as $side) {
+                $sides[] = BurgerCustomizationRepository::getId("side", $side);
             }
-            $burgerList[] = [
-                "meat_id" => $meat_id,
-                "bread_id" => $bread_id,
-                "sides" => $sides,
-            ];
         }
-        foreach ($burgerList as $b) {
-            Burger::query()->create([
-                "meat_id" => $b["meat_id"],
-                "bread_id" => $b["bread_id"],
-                "sides" => json_encode($b["sides"] !== [] ? $b["sides"] : null),
-                "order_id" => $order_id,
-            ]);
-        }
+        return [
+            "meat_id" => $meat_id,
+            "bread_id" => $bread_id,
+            "sides" => $sides,
+        ];
     }
 
 }

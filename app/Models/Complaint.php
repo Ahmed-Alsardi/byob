@@ -9,7 +9,23 @@ class Complaint extends Model
 {
     use HasFactory;
 
-    public function order()
+    protected $fillable = [
+        'order_id',
+        'customer_message',
+        'admin_message',
+        'admin_id',
+        'refund'
+    ];
+
+  public static function createComplaint(mixed $id, string $customerMessage)
+  {
+      return Complaint::create([
+          'order_id' => $id,
+          'customer_message' => $customerMessage
+      ]);
+  }
+
+  public function order()
     {
         return $this->belongsTo(Order::class);
     }
@@ -22,5 +38,13 @@ class Complaint extends Model
     public function is_resolved(): bool
     {
         return $this->refund !== null;
+    }
+
+    public function resolve($refund, $admin_message, $adminId){
+        $this->refund = $refund;
+        $this->admin_message = $admin_message;
+        $this->admin_id = $adminId;
+        $this->save();
+        return $this;
     }
 }

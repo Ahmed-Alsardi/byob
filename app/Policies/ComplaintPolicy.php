@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Helper\UserRole;
 use App\Models\Complaint;
 use App\Models\User;
+use App\Repository\UserRepository;
 use Illuminate\Auth\Access\Response;
 
 class ComplaintPolicy
@@ -12,9 +13,9 @@ class ComplaintPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewList(User $user): bool
     {
-        return $user->role  !== UserRole::CHEF;
+        return $this->isAdmin($user) || $this->isCustomer($user);
     }
 
     /**
@@ -30,39 +31,19 @@ class ComplaintPolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === UserRole::CUSTOMER;
+        return $this->isCustomer($user);
     }
 
+    public function store(User $user): bool
+    {
+        return $this->isCustomer($user);
+    }
     /**
      * Determine whether the user can update the model.
      */
     public function update(User $user, Complaint $complaint): bool
     {
-        return $user->role === UserRole::ADMIN;
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Complaint $complaint): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Complaint $complaint): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Complaint $complaint): bool
-    {
-        //
+        return $user->role === UserRepository::ADMIN;
     }
 
     /**
@@ -72,9 +53,23 @@ class ComplaintPolicy
      */
     public function sameUserOrAdmin(User $user, Complaint $complaint): bool
     {
-        if ($user->role === UserRole::ADMIN || $user->id == $complaint->order->customer_id) {
+        if ($user->role === UserRepository::ADMIN || $user->id == $complaint->order->customer_id) {
             return true;
         }
         return false;
+    }
+
+    private function isAdmin(User $user)
+    {
+        return $user->role === UserRepository::ADMIN;
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function isCustomer(User $user): bool
+    {
+        return $user->role === UserRepository::CUSTOMER;
     }
 }

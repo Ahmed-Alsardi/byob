@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helper\UserRole;
+use App\Repository\UserRepository;
 
 class Customer extends User
 {
@@ -11,14 +12,14 @@ class Customer extends User
     {
         parent::boot();
         static::creating([
-            "role" => UserRole::CUSTOMER,
+            "role" => UserRepository::CUSTOMER,
         ]);
     }
 
     protected static function booted()
     {
         static::addGlobalScope('customer', function ($q) {
-            $q->where("role", "=", UserRole::CUSTOMER);
+            $q->where("role", "=", UserRepository::CUSTOMER);
         });
     }
 
@@ -32,4 +33,14 @@ class Customer extends User
         return $this->hasOne(Location::class, "user_id", "id");
     }
 
+    public static function getComplaintsByUserID($userId) {
+        $customer = self::with(['orders.complaint'])->find($userId);
+        return $customer->orders
+            ->filter(function ($order) {
+                return $order->complaint;
+            })
+            ->map(function($order) {
+                return $order->complaint;
+            });
+    }
 }

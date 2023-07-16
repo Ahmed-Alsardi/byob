@@ -9,7 +9,7 @@
 {{--            @dd($complaint)--}}
             <p>Status: {{$complaint->is_resolved() ? 'Resolved' : 'Pending'}}</p>
         </div>
-        @if(auth()->user()->role === \App\Helper\UserRole::ADMIN)
+        @if(auth()->user()->role === \App\Repository\UserRepository::ADMIN)
             <form action="/complaints/{{$complaint->id}}" method="POST">
                 @csrf
                 @method('PUT')

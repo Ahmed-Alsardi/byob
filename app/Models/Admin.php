@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helper\UserRole;
+use App\Repository\UserRepository;
 
 class Admin extends User
 {
@@ -13,7 +14,7 @@ class Admin extends User
 
         static::creating(function($admin) {
             $admin->forceFill([
-               "role" =>UserRole::ADMIN,
+               "role" => UserRepository::ADMIN,
             ]);
         });
     }
@@ -21,7 +22,11 @@ class Admin extends User
     public static function booted()
     {
         static::addGlobalScope('admin', function ($q) {
-            $q->where("role", "=", UserRole::ADMIN);
+            $q->where("role", "=", UserRepository::ADMIN);
         });
+    }
+
+    public static function getComplaintsByUserID($userId) {
+        return Complaint::all();
     }
 }

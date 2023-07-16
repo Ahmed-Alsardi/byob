@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Helper;
+namespace App\Repository;
+use App\Models\Admin;
 
-class UserRole
+class UserRepository
 {
     const ADMIN = "admin";
     const CUSTOMER = "customer";

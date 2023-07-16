@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Models\BurgerCustomization;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class BurgerCustomizationRepository
 {
@@ -12,60 +13,26 @@ class BurgerCustomizationRepository
     const BREAD = "bread";
     const SIDE = "side";
 
-    public static function getId(string $category, string $name): int
+    const CUSTOMIZATION_CACHE_NAME = "customizations";
+
+    public static function getId(string $category, string $name)
     {
-        return BurgerCustomization::query()
-            ->where("category", $category)
-            ->where("name", $name)
-            ->first()
-            ->id;
+        return BurgerCustomization::getCustomizationId($category, $name);
     }
 
-    public static function getName(string $category, int $id): string
+    public static function getName(string $category, int $id)
     {
-        return BurgerCustomization::query()
-            ->where("category", $category)
-            ->where("id", $id)
-            ->first()
-            ->name;
-    }
-    public static function getBreads(): Collection|array
-    {
-        return self::_getType("bread");
+        return BurgerCustomization::getCustomizationName($category, $id);
     }
 
-    public static function getMeats(): Collection|array
+    public static function getAllCustomization()
     {
-        return self::_getType("meat");
+        return Cache::rememberForever(self::CUSTOMIZATION_CACHE_NAME, fn() => BurgerCustomization::getAll());
     }
 
-    public static function getSides(): Collection|array
+    public static function addCustomization($category, $name)
     {
-        return self::_getType("side");
-    }
-    private static function _addToCategory(string $category, string $value): void
-    {
-        BurgerCustomization::query()
-            ->create([
-                "category" => $category,
-                "name" => $value,
-            ]);
-    }
-
-    private static function _getType(string $category): Collection|array
-    {
-        return BurgerCustomization::query()
-            ->where("category", $category)
-            ->get();
-    }
-
-    public static function getCustomizations()
-    {
-        return BurgerCustomization::all();
-    }
-
-    public static function addCustomization(mixed $category, mixed $name)
-    {
-        self::_addToCategory($category, $name);
+        BurgerCustomization::insertCustomization($category, $name);
+        Cache::forget(self::CUSTOMIZATION_CACHE_NAME);
     }
 }

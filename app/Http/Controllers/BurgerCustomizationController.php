@@ -2,77 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Features\BurgerCustomization\BurgerCustomizationHandler;
 use App\Http\Requests\StoreBurgerCustomizationRequest;
-use App\Http\Requests\UpdateBurgerCustomizationRequest;
 use App\Models\BurgerCustomization;
-use App\Repository\BurgerCustomizationRepository;
+use Illuminate\Http\Request;
 
 class BurgerCustomizationController extends Controller
 {
 
-    public function __construct()
-    {
-        $this->authorizeResource(BurgerCustomization::class, "burgerCustomization");
-    }
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, BurgerCustomizationHandler $handler)
     {
-        $cus = BurgerCustomizationRepository::getCustomizations();
-        return view("customization.index", [
-            "customizations" => $cus,
-        ]);
+        return $handler->handleList($request);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request, BurgerCustomizationHandler $handler)
     {
-        return view("customization.create");
+        return $handler->handleCreate($request);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreBurgerCustomizationRequest $request)
+    public function store(StoreBurgerCustomizationRequest $request, BurgerCustomizationHandler $handler)
     {
-        BurgerCustomizationRepository::addCustomization($request->category, $request->name);
-        return redirect()->route("customization.index");
+        return $handler->handleStore($request);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(BurgerCustomization $burgerCustomization)
+    public function show(Request $request, BurgerCustomization $burgerCustomization, BurgerCustomizationHandler $handler)
     {
-        return view("customization.show", [
-            "customization" => $burgerCustomization,
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(BurgerCustomization $burgerCustomization)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateBurgerCustomizationRequest $request, BurgerCustomization $burgerCustomization)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(BurgerCustomization $burgerCustomization)
-    {
-        //
+       return $handler->handleView($request, $burgerCustomization);
     }
 }

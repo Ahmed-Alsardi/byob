@@ -1,6 +1,7 @@
 <?php
 
 use App\Helper\UserRole;
+use App\Repository\UserRepository;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string("role")->default(UserRole::CUSTOMER);
+            $table->string("role")->default(UserRepository::CUSTOMER);
             $table->boolean("available")->default(true);
             $table->timestamp("unavailable_until")->default(now());
             $table->rememberToken();

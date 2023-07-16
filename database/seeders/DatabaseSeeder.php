@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Helper\UserRole;
 use App\Models\User;
+use App\Repository\UserRepository;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -22,13 +23,13 @@ class DatabaseSeeder extends Seeder
             "name" => "admin",
             "email" => "admin@admin.com",
             "password" => bcrypt("password"),
-            "role" => UserRole::ADMIN,
+            "role" => UserRepository::ADMIN,
         ]);
         User::factory()->create([
             "name" => "customer",
             "email" => "t@t.com",
             "password" => bcrypt("password"),
-            "role" => UserRole::CUSTOMER,
+            "role" => UserRepository::CUSTOMER,
         ]);
     }
 }
