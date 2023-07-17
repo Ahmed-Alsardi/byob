@@ -2,8 +2,10 @@
 
 namespace App\Features\Order;
 
+use App\Events\OrderUpdate;
 use App\Http\Requests\StoreComplaintRequest;
 use App\Models\Order;
+use App\Models\User;
 use App\Repository\ComplaintRepository;
 use App\Repository\OrderRepository;
 use App\Services\EmailNotificationService;
@@ -39,6 +41,7 @@ class OrderViewsHandler
         } else {
             abort(500);
         }
+        OrderUpdate::dispatch($request->user());
         return redirect()->route("order.index");
     }
 
@@ -56,6 +59,15 @@ class OrderViewsHandler
         }
         $validated = $request->validated();
         $complaint = ComplaintRepository::createComplaint($order, $validated["message"]);
+        OrderUpdate::dispatch($request->user());
         return redirect()->route("complaint.show", $complaint);
     }
+
+  public function handleOrderChannel(User $user)
+  {
+     $orders = OrderRepository::getOrdersByUser($user);
+     return response()->json([
+         "orders" => $orders
+     ]);
+  }
 }

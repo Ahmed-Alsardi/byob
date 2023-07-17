@@ -23,6 +23,7 @@ class OrderRepository
 
     const COLUMN_NAME = 'column_name';
     const METHOD_NAME = 'method_name';
+    const ORDER_CHANNEL_NAME = 'order';
 
     const ROLE_ORDER = [
         UserRepository::CUSTOMER => [

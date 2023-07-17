@@ -2,6 +2,7 @@
 
 namespace App\Features\Complaint;
 
+use App\Events\OrderUpdate;
 use App\Http\Requests\UpdateComplaintRequest;
 use App\Models\Complaint;
 use App\Repository\ComplaintRepository;
@@ -31,6 +32,7 @@ class ComplaintViewHandler
         $validated = $request->validated();
         $userId = $request->user()->id;
         ComplaintRepository::resolveComplaint($complaint, $validated['refund'], $validated['admin_message'], $userId);
+        OrderUpdate::dispatch($request->user());
         return redirect()->route("complaint.index");
     }
 }

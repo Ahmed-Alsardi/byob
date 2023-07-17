@@ -17,5 +17,8 @@
             </div>
         </div>
     </div>
-    <script src="{{asset('orderPooling.js')}}"></script>
+    @push('scripts')
+        <script src="{{ asset('js/orderPooling.js') }}"></script>
+    @endpush
+{{--    <script src="{{asset('orderPooling.js')}}"></script>--}}
 </x-auth-app-layout>
