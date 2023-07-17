@@ -108,6 +108,7 @@ class Order extends Model
         return $this;
     }
 
+    // This is used in OrderRepository::getOrdersByUser and the user is not admin
     public static function getOrdersByUser($columnName, $userId): Collection|array
     {
         return Order::query()
@@ -115,6 +116,7 @@ class Order extends Model
             ->get();
     }
 
+    // This is used in OrderRepository::getOrdersByUser and the user is admin
     public static function getAllOrders(): Collection|array
     {
         return Order::all();

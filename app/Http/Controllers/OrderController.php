@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderUpdate;
 use App\Features\Order\OrderViewsHandler;
 use App\Http\Requests\StoreComplaintRequest;
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -14,6 +16,7 @@ class OrderController extends Controller
      */
     public function index(Request $request, OrderViewsHandler $handler)
     {
+        OrderUpdate::dispatch($request->user());
         $this->authorize('view-list-order');
         return $handler->handleList($request);
     }
@@ -40,5 +43,9 @@ class OrderController extends Controller
     public function storeComplaint(StoreComplaintRequest $request, Order $order, OrderViewsHandler $handler) {
         $this->authorize('store-complaint', $order);
         return $handler->handleStoreComplaint($request, $order);
+    }
+
+    public function getOrderToChannel(User $user, OrderViewsHandler $handler) {
+        return $handler->handleOrderChannel($user);
     }
 }
